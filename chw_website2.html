@@ -26,9 +26,6 @@
     line-height:1.55;
   }
 
-  /* Remove: .brand styles (logo bar) */
-
-  /* Title (just below where the brand bar used to be) */
   .title-block{
     background:#e9f5f6;
     border-bottom:1px solid #d4eaec;
@@ -39,7 +36,6 @@
   }
   .title-block p{ margin:0; color:#415053 }
 
-  /* Sticky action bar */
   .bar{
     position:sticky; top:0; z-index:20;
     background:var(--white);
@@ -52,12 +48,12 @@
     background:var(--hsc-turquoise); color:#fff; border:2px solid transparent;
     padding:.55rem .9rem; border-radius:10px; font-weight:800; text-decoration:none;
     transition:transform .06s ease, box-shadow .2s ease, background .2s ease;
+    cursor:pointer;
   }
   .btn:hover{transform:translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.12)}
   .btn.alt{background:var(--hsc-cherry)}
   a { color: var(--hsc-cherry); }
 
-  /* Hero */
   header.hero{
     position:relative;
     background:linear-gradient(120deg, var(--hsc-turquoise) 0%, var(--hsc-turquoise-2) 100%);
@@ -92,80 +88,132 @@
       0 0 36px rgba(0,122,134,.45);}
   }
 
-  .banner{
-    background:#ffffff;
-    border-top:1px solid #e6ecec;
-    border-bottom:1px solid #e6ecec;
-    padding:0;
-  }
-  .banner .figure{ position:relative; margin:0; padding:0; width:100%; max-width:100%; }
-  .banner .figure img{ display:block; width:100%; height:auto; }
-  .banner .caption{ text-align:center; font-size:.95rem; color:#445; padding:.6rem 1rem 1rem; }
-
-  .marquee{ position:relative; overflow:hidden; background:#f6fbfc; border-top:1px solid #e6ecec; }
-  .marquee .track{ display:inline-block; white-space:nowrap; will-change:transform; padding:.7rem 0; animation:scroll 20s linear infinite; }
-  @keyframes scroll{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-  .marquee .track span{
-    display:inline-block; margin-right:1rem; padding:.35rem .75rem; border-radius:999px;
-    background:#e9f5f6; border:1px solid #cfe8ea; color:#0f5f67; font-weight:800; letter-spacing:.01em;
-    text-shadow: 0 1px 0 rgba(255,255,255,.8); box-shadow: 0 2px 6px rgba(0,0,0,.05);
-  }
-  .marquee .track span::before{ content:"Reminder: "; color:#ba0c2f; font-weight:900; margin-right:.35rem; }
-
-  .accordion { padding:1rem }
+  /* Accordion */
+  .accordion { padding:.6rem 0 0; }
   .accordion .item{
-    background:#fff; border:1px solid #e9eff0; margin:.75rem 0; border-left:6px solid var(--hsc-turquoise);
+    background:#fff;
+    border:1px solid #e9eff0;
+    margin:.65rem 0;
+    border-left:6px solid var(--hsc-turquoise);
     border-radius:10px;
+    overflow:hidden;
   }
   .accordion button{
-    width:100%; text-align:left; background:#fff; border:0; padding:1rem;
-    font-weight:800; font-size:1.05rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center;
+    width:100%;
+    text-align:left;
+    background:#fff;
+    border:0;
+    padding:1rem;
+    font-weight:900;
+    font-size:1.02rem;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
   }
   .accordion button span.icon{
-    width:26px; height:26px; border-radius:50%; display:inline-grid; place-items:center;
-    background:var(--hsc-cherry); color:#fff; font-weight:900; font-size:1rem;
+    width:26px; height:26px; border-radius:50%;
+    display:inline-grid; place-items:center;
+    background:var(--hsc-cherry); color:#fff;
+    font-weight:900; font-size:1rem;
+    flex:0 0 auto;
   }
-  .accordion .panel{display:none; padding:1rem; border-top:1px dashed #dce6e7}
+  .accordion .panel{
+    display:none;
+    padding:1rem;
+    border-top:1px dashed #dce6e7;
+    background:#fbfefe;
+  }
   .accordion .panel ul{margin:.2rem 0; padding-left:1.1rem}
   .accordion .panel li{margin:.35rem 0}
-  .tip{background:#eef8f9; border-left:6px solid var(--hsc-cherry); padding:.75rem; border-radius:8px; margin:.8rem 0}
+  .tip{
+    background:#eef8f9;
+    border-left:6px solid var(--hsc-cherry);
+    padding:.75rem;
+    border-radius:8px;
+    margin:.8rem 0;
+  }
 
-  .imgrow{ display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:.6rem; margin:.75rem 0 .25rem; }
-  .imgcard{ background:#f7fbfc; border:1px solid #e1eef0; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.05); }
-  .imgcard img{ width:100%; height:140px; object-fit:cover; display:block; }
-  .imgcap{ padding:.45rem .6rem; font-size:.9rem; color:#274046; }
+  /* Steps */
+  .steps{
+    background:#fff;
+    border-top:4px solid var(--hsc-cherry);
+    border-bottom:1px solid #e7ecee;
+    padding:1rem 1rem 1.5rem;
+  }
+  .steps h2{margin:0 0 .65rem; color:var(--hsc-turquoise)}
+  .checklist{display:grid; grid-template-columns:1fr; gap:.6rem}
+  .card{
+    border:1px solid #e8eff1;
+    border-radius:12px;
+    padding:1rem;
+    background:#fbfefe;
+  }
+  .step-title{margin:0; font-weight:900; font-size:1.05rem; color:#1f2326}
+  .card .detail{margin:.4rem 0 0; color:#4c5053; font-weight:500}
+  .card .links{margin-top:.55rem; display:flex; gap:.5rem; flex-wrap:wrap}
+  .card .links a{display:inline-block; text-decoration:none; color:var(--hsc-cherry); font-weight:900}
+  .card .links a:hover{text-decoration:underline}
 
-  .scope{ background:#fff; border-top:4px solid var(--hsc-cherry); border-bottom:1px solid #e7ecee; padding:1rem; }
+  /* Scope */
+  .scope{
+    background:#fff;
+    border-top:4px solid var(--hsc-cherry);
+    border-bottom:1px solid #e7ecee;
+    padding:1rem;
+  }
   .scope h2{ margin:.2rem 0 1rem; color:var(--hsc-turquoise) }
   .toggle{ display:flex; gap:.5rem; flex-wrap:wrap; margin:.2rem 0 1rem; }
-  .toggle button{ background:#eff7f8; border:1px solid #d7ecee; color:#144a51; padding:.45rem .75rem; border-radius:9px; font-weight:800; cursor:pointer; }
+  .toggle button{
+    background:#eff7f8;
+    border:1px solid #d7ecee;
+    color:#144a51;
+    padding:.45rem .75rem;
+    border-radius:9px;
+    font-weight:900;
+    cursor:pointer;
+  }
   .toggle button.active{ background:var(--hsc-turquoise); color:#fff; border-color:transparent }
   .scope .cols{ display:grid; grid-template-columns:1fr; gap:.75rem; }
   @media (min-width:900px){ .scope .cols{ grid-template-columns:1fr 1fr; } }
-  .panelbox{ position:relative; border:1px solid #e8eff1; border-radius:12px; padding:1rem; background:#fbfefe; overflow:hidden; }
+  .panelbox{
+    position:relative;
+    border:1px solid #e8eff1;
+    border-radius:12px;
+    padding:1rem;
+    background:#fbfefe;
+    overflow:hidden;
+  }
   .panelbox h3{ margin:.1rem 0 .5rem; color:#1f2326 }
   .panelbox ul{ margin:.4rem 0 0; padding-left:1.1rem }
   .panelbox li{ margin:.35rem 0 }
 
-  .clipart{ position:absolute; top: -14px; right: -14px; width: var(--clip-size); height: var(--clip-size); opacity:.95; pointer-events:none; user-select:none; transform-origin: 80% 20%; animation: floatSway 6s ease-in-out infinite; }
-  .clipart-billable{ filter: drop-shadow(0 0 10px rgba(0,122,134,.65)) drop-shadow(0 0 22px rgba(0,122,134,.45)) drop-shadow(0 0 38px rgba(0,122,134,.35)); animation: floatSway 6s ease-in-out infinite, haloPulseTeal 2.4s ease-in-out infinite alternate; }
-  .clipart-nonbillable{ filter: drop-shadow(0 0 10px rgba(186,12,47,.65)) drop-shadow(0 0 22px rgba(186,12,47,.42)) drop-shadow(0 0 38px rgba(186,12,47,.32)); animation: floatSway 6s ease-in-out infinite, haloPulseCherry 2.4s ease-in-out infinite alternate; }
+  .clipart{
+    position:absolute; top:-14px; right:-14px;
+    width:var(--clip-size); height:var(--clip-size);
+    opacity:.95; pointer-events:none; user-select:none;
+    transform-origin: 80% 20%;
+    animation: floatSway 6s ease-in-out infinite;
+  }
+  .clipart-billable{
+    filter: drop-shadow(0 0 10px rgba(0,122,134,.65)) drop-shadow(0 0 22px rgba(0,122,134,.45)) drop-shadow(0 0 38px rgba(0,122,134,.35));
+    animation: floatSway 6s ease-in-out infinite, haloPulseTeal 2.4s ease-in-out infinite alternate;
+  }
+  .clipart-nonbillable{
+    filter: drop-shadow(0 0 10px rgba(186,12,47,.65)) drop-shadow(0 0 22px rgba(186,12,47,.42)) drop-shadow(0 0 38px rgba(186,12,47,.32));
+    animation: floatSway 6s ease-in-out infinite, haloPulseCherry 2.4s ease-in-out infinite alternate;
+  }
   @keyframes floatSway{ 0%{transform:translateY(0) rotate(0deg) scale(1)} 50%{transform:translateY(4px) rotate(0.3deg) scale(1.02)} 100%{transform:translateY(0) rotate(0deg) scale(1)} }
-  @keyframes haloPulseTeal{ from{filter:drop-shadow(0 0 8px rgba(0,122,134,.55)) drop-shadow(0 0 18px rgba(0,122,134,.38)) drop-shadow(0 0 28px rgba(0,122,134,.28))} to{filter:drop-shadow(0 0 14px rgba(0,122,134,.85)) drop-shadow(0 0 28px rgba(0,122,134,.58)) drop-shadow(0 0 46px rgba(0,122,134,.46))} }
-  @keyframes haloPulseCherry{ from{filter:drop-shadow(0 0 8px rgba(186,12,47,.55)) drop-shadow(0 0 18px rgba(186,12,47,.38)) drop-shadow(0 0 28px rgba(186,12,47,.28))} to{filter:drop-shadow(0 0 14px rgba(186,12,47,.9)) drop-shadow(0 0 28px rgba(186,12,47,.6)) drop-shadow(0 0 46px rgba(186,12,47,.5))} }
+  @keyframes haloPulseTeal{
+    from{filter:drop-shadow(0 0 8px rgba(0,122,134,.55)) drop-shadow(0 0 18px rgba(0,122,134,.38)) drop-shadow(0 0 28px rgba(0,122,134,.28))}
+    to{filter:drop-shadow(0 0 14px rgba(0,122,134,.85)) drop-shadow(0 0 28px rgba(0,122,134,.58)) drop-shadow(0 0 46px rgba(0,122,134,.46))}
+  }
+  @keyframes haloPulseCherry{
+    from{filter:drop-shadow(0 0 8px rgba(186,12,47,.55)) drop-shadow(0 0 18px rgba(186,12,47,.38)) drop-shadow(0 0 28px rgba(186,12,47,.28))}
+    to{filter:drop-shadow(0 0 14px rgba(186,12,47,.9)) drop-shadow(0 0 28px rgba(186,12,47,.6)) drop-shadow(0 0 46px rgba(186,12,47,.5))}
+  }
 
-  .steps{ background:#fff; border-top:4px solid var(--hsc-cherry); border-bottom:1px solid #e7ecee; padding:1rem 1rem 1.5rem; }
-  .steps h2{margin:0 0 .65rem; color:var(--hsc-turquoise)}
-  .progress{ width:100%; height:12px; background:#ecf6f7; border-radius:999px; overflow:hidden; border:1px solid #d8ebed; margin:.4rem 0 1rem; }
-  .progress .bar{ height:100%; width:0%; background:linear-gradient(90deg, var(--hsc-turquoise), #22a6b3); }
-  .checklist{display:grid; grid-template-columns:1fr; gap:.6rem}
-  .card{ border:1px solid #e8eff1; border-radius:12px; padding:1rem; background:#fbfefe; }
-  .card label{display:flex; gap:.7rem; cursor:pointer; font-weight:700}
-  .card input[type="checkbox"]{transform:scale(1.2); margin-top:.15rem}
-  .card .detail{margin:.5rem 0 0 .1rem; color:#4c5053; font-weight:500}
-  .card .links a{display:inline-block; margin:.25rem .4rem .1rem 0; text-decoration:none; color:var(--hsc-cherry)}
-  .card .links a:hover{text-decoration:underline}
-
+  /* Tools + Footer */
   .tools{ display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:.75rem; padding:1rem; }
   .tool{ background:#fff; border:1px solid #e7ecef; border-radius:12px; padding:1rem; }
   .tool h3{margin:.2rem 0 .5rem; color:#222}
@@ -176,128 +224,358 @@
     border-top:6px solid var(--hsc-turquoise);
   }
 
-  .print-mode .bar,
-  .print-mode .marquee,
-  .print-mode .figure { display: none !important; }
-  .print-mode .scope, 
-  .print-mode .steps { border-top-color: #ccc !important; }
-  .print-mode body, .print-mode { color: #222; }
-
   @media print {
-    .bar, .marquee, .figure { display: none !important; }
-    .scope, .steps { border-top-color: #ccc !important; }
+    .bar { display:none !important; }
     body { color:#222; }
   }
 </style>
 </head>
 
 <body>
-  <!-- (Removed the UNM logo brand bar) -->
-
-  <!-- Title -->
   <div class="title-block">
     <h1>CHW/CHR Guide: Certification & Medicaid Enrollment (New Mexico)</h1>
     <p class="glowline">Step-by-step support to certify as a CHW/CHR and enroll with NM Medicaid.</p>
   </div>
 
-  <!-- Quick actions (sticky) -->
   <div class="bar" role="navigation" aria-label="quick actions">
     <div></div>
     <div class="right">
       <a class="btn" href="https://www.nmhealth.org/about/phd/pchb/ochw/cert" target="_blank" rel="noopener">Apply for CHW Certification</a>
-      <a class="btn alt" href="https://nmmedicaid.portal.conduent.com/static/index.htm" target="_blank" rel="noopener">Medicaid Provider Portal</a>
+      <a class="btn alt" href="https://yes.nm.gov/nmhr/s/?language=en_US" target="_blank" rel="noopener">Medicaid Provider Portal</a>
     </div>
   </div>
 
-  <!-- Hero -->
   <header class="hero" role="banner">
     <div class="kicker">For Community Health Workers (CHWs) & Community Health Representatives (CHRs)</div>
     <p>Use this interactive guide to complete certification, enroll as a Medicaid provider, and prepare to document and bill CHW/CHR services statewide.</p>
   </header>
 
-  <!-- IMAGE banner -->
-  <section class="banner" aria-label="overview and updates">
-    <figure class="figure">
-      <img src="https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop" alt="Community health worker consulting with a patient" />
-      <figcaption class="caption">CHWs/CHRs connect New Mexicans to care — certification and enrollment help below.</figcaption>
-    </figure>
+  <!-- Enrollment Steps -->
+  <section class="steps" aria-label="Enrollment steps" id="enroll-provider">
+    <h2>Enrolling in Medicaid as a Provider</h2>
 
-    <div class="marquee" role="region" aria-label="updates">
-      <div class="track">
-        <span>Verify Medicaid eligibility before each encounter.</span>
-        <span>Attach MAD-872 (Standing Order) to each claim’s date of service.</span>
-        <span>Use Provider Type 462 · Specialty 230 for CHW/CHR enrollment.</span>
-        <span>Document start/stop times, activities, and outcomes for every visit.</span>
-        <span>Confirm services fall under the statewide CHW Standing Order.</span>
-      </div>
-    </div>
-  </section>
+    <div class="checklist" id="checklist">
+      <!-- Step 1 -->
+      <div class="card">
+        <p class="step-title">Step 1 — Become a certified CHW</p>
+        <div class="detail">Complete CHW certification through NM DOH OCHW. Use the dropdown sections below for certification details.</div>
 
-  <!-- Accordion -->
-  <section class="accordion" aria-label="Eligibility & Certification">
-    <div class="item">
-      <button type="button" aria-expanded="false">
-        <span>Eligibility (Certification)</span>
-        <span class="icon">+</span>
-      </button>
-      <div class="panel" role="region">
-        <ul>
-          <li>18+ years old</li>
-          <li>High school diploma or GED</li>
-          <li>Proof of CHW core competency skills through training or experience</li>
-          <li>Additional documentation (letters of reference, specialty training certificates) as applicable</li>
-        </ul>
+        <!-- ✅ Dropdowns under Step 1 (NO Eligibility section) -->
+        <section class="accordion" aria-label="Certification Details" id="certDetailsAccordion">
 
-        <div class="imgrow" aria-label="Eligibility visual examples">
-          <figure class="imgcard">
-            <img src="kijkwijzer-18-logo-png_seeklogo-78465.png" alt="Adult individual representing 18+ requirement" />
-            <figcaption class="imgcap">18+ years old</figcaption>
-          </figure>
-          <figure class="imgcard">
-            <img src="https://images.unsplash.com/photo-1519452575417-564c1401ecc0?q=80&w=800&auto=format&fit=crop" alt="Diploma or GED certificate" />
-            <figcaption class="imgcap">High school diploma or GED</figcaption>
-          </figure>
-          <figure class="imgcard">
-            <img src="https://images.unsplash.com/photo-1517520287167-4bbf64a00d66?q=80&w=800&auto=format&fit=crop" alt="Training classroom demonstrating core competency skills" />
-            <figcaption class="imgcap">Proof of CHW core competency skills</figcaption>
-          </figure>
-          <figure class="imgcard">
-            <img src="additionalimage.png" alt="Letters of reference and certificates" />
-            <figcaption class="imgcap">Additional documentation</figcaption>
-          </figure>
+          <!-- Core Features -->
+          <div class="item" id="core-features-item">
+            <button type="button" aria-expanded="false">
+              <span>Core Features of Certification</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <ul>
+                <li>There is a grandfathering process to recognize and certify existing CHWs based on work or volunteer experiences.</li>
+                <li>Applicants who are new to the field will be required to complete a Department of Health approved training program before applying for NM state certification.</li>
+                <li>Everyone is expected to demonstrate proficiency in the CHW core competencies.</li>
+                <li>Specialist certification will be available for applicants who have training in department approved specialty tracks.</li>
+                <li>All applicants eligible for certification will have to pay a <strong>$59</strong> background with IDEMIA IdentoGO upon application eligibility requirements.</li>
+                <li>Certificates will be valid for <strong>two (2) years</strong>. In order to be recertified, applicants will have to complete <strong>30 hours</strong> of department approved continuing education (15-NMDOH OCHW Endorsed Trainings and 15 Self-Select training OR 30-NMDOH OCHW Endorsed Trainings).</li>
+                <li>An application fee of <strong>$125</strong> for “generalist” certification. Specialty certification for demonstrated additional education/training will be an additional <strong>$10</strong> per specialty area.</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Apply for Initial -->
+          <div class="item" id="apply-initial-item">
+            <button type="button" aria-expanded="false">
+              <span>Apply for CHW Initial Certification</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>
+                Thank you for your interest in applying for Initial Certification Pathway, which offers two (2) paths.
+                Please visit the Community Health Workers Application System to submit all required State CHW certification documentation.
+              </p>
+
+              <p><strong>The NMDOH, OCHW offers two (2) state CHW certification paths:</strong></p>
+
+              <div class="tip"><strong>Grandfathering process:</strong></div>
+              <ul>
+                <li>Applicants may be eligible to become state CHW certified via the grandfathering process pending alignment of the curriculum and skill building.</li>
+                <li>Proof that applicant is at least 18 years of age by submission of a color copy of a photo ID (i.e. Government issued ID or Certificate of Indian Blood Card)</li>
+                <li>Verification of education, including documentation that the applicant has at least a high school diploma or certificate of high school equivalency.</li>
+                <li>Verification of proficiency in the core competencies through training and/or experience, signed by a current or former supervisor.</li>
+                <li>Documentation of 2000 hours of work and/or volunteer experience as a CHW in the 2 (two) years prior to application or documentation of at least half-time paid or volunteer employment as a CHW in the 5 (five) years prior to application. You must verify that you have paid/volunteer experience before 5/21/2014.</li>
+                <li>Two letters of reference.</li>
+                <li>Verification of specialty training certificates that you have successfully completed and may qualify you to be considered as specialist I, II, or III.</li>
+              </ul>
+
+              <div class="tip"><strong>Formalized training program completion: 100 hours of Core Competency instruction hours:</strong></div>
+              <ul>
+                <li>Proof that applicant is at least 18 years of age by submission of a color copy of a photo ID (i.e. Government issued ID or Certificate of Indian Blood Card)</li>
+                <li>Verification of education, including documentation that the applicant has at least a high school diploma or certificate of high school equivalency.</li>
+                <li>Verification of proficiency in the core competencies by providing a certificate of completion from a Department of Health, Office of Community Health Workers (NMDOH/OCHW) Certification Training Program or other NM endorsed training programs that contain an examination component for each of the core competencies. Include copies of the Certificates of Completion provided by the training organization.</li>
+                <li>Approved OCHW training provider (see Training Button for list)</li>
+                <li>TRAIN New Mexico at: TRAIN NM</li>
+                <li>Completion of Indian Health Service (IHS) Community Health Representatives (CHR) Basics Training (125 hours) at: CHR Training and Education</li>
+              </ul>
+
+              <div class="tip"><strong>CHW certification requirements:</strong></div>
+              <ul>
+                <li>Successful completion of Core Competency (CC) training program; or</li>
+                <li>Successful completion of Indian Health Service (IHS) Community Health Representatives (CHR) Basics Training; and</li>
+                <li>Forty (40) hours of experiential learning placement.</li>
+              </ul>
+
+              <div class="tip"><strong>Required Core Competencies:</strong></div>
+              <p style="margin:.25rem 0 0">
+                The CHW Profession, Effective Communication, Interpersonal Skills, Health Coaching, Service Coordination, Advocacy,
+                Technical Teaching, Community Health Outreach, Community Knowledge &amp; Assessment.
+                Clinical Support is an optional for those who desire to enhance their skills or whose jobs require it.
+                Please refer to the NMCHW Core Competency Blue Wheel.
+              </p>
+            </div>
+          </div>
+
+          <!-- Renewal -->
+          <div class="item" id="renewal-item">
+            <button type="button" aria-expanded="false">
+              <span>CHW Renewal Certification &amp; Requirements</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>Please visit the Community Health Workers Application System to submit all required State CHW re-certification documentations.</p>
+
+              <p><strong>For state CHW recertification, applicants will need to have the following within the date of your certification issuance and certification expiration date:</strong></p>
+              <ul>
+                <li><strong>30 Continuing Education Units</strong> in total</li>
+                <li><strong>15</strong> CEUs are required from an NMDOH, Office of Community Health Workers endorsed training entity, and <strong>15</strong> self-select trainings; or</li>
+                <li><strong>30</strong> CEUs of NMDOH OCHW endorsed training in total</li>
+              </ul>
+
+              <div class="tip"><strong>Approval for CEUs includes the following on the actual certificate received from the training provider:</strong></div>
+              <ul>
+                <li>Title of Training</li>
+                <li>Dates of the Training</li>
+                <li>Training Facilitator Signature Verification</li>
+                <li>Number of Training Contact Hours</li>
+                <li>Logos, etc.</li>
+              </ul>
+
+              <p style="margin:.25rem 0 0"><strong>Note:</strong> Verification will be approved from NMDOH OCHW upon meeting the requirement for recertification criteria of CEU certificates.</p>
+            </div>
+          </div>
+
+          <!-- Specialty Content Areas -->
+          <div class="item" id="specialty-areas-item">
+            <button type="button" aria-expanded="false">
+              <span>NMDOH OCHW Specialty Content Areas</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>To enhance your Generalist CHW certification status, we offer NMDOH OCHW endorsed specialty content areas as a Specialist I, II, and III.</p>
+
+              <div class="tip"><strong>For new specialty requests (Specialty I, II, III):</strong></div>
+              <ul>
+                <li>Training entity approved by NMDOH/OCHW and specialty training is twelve (12) or more consecutive instruction hours.</li>
+                <li>This is for an applicant who has not requested a specialty on their certification application and plans to add a Specialty I, II, and III.</li>
+              </ul>
+
+              <div class="tip"><strong>Renewal CHW Specialty Endorsement Criteria:</strong></div>
+              <ul>
+                <li>Training entity approved by NMDOH OCHW and specialty training is four (4) CEUs of continuous training hours from one training entity per content area.</li>
+                <li>Please note that specialty CEUs content areas are not to be duplicated with general recertification CEUs.</li>
+                <li>Additionally, they should be actively renewed during each 2-year cycle of recertification and not used in previous applications.</li>
+              </ul>
+
+              <p><strong>Specialty Payment:</strong> $10.00 for each Initial or Renewal Specialty requested on the application. To send payments, please see Certification Payment below.</p>
+            </div>
+          </div>
+
+          <!-- Payment & Fees -->
+          <div class="item" id="payment-fees-item">
+            <button type="button" aria-expanded="false">
+              <span>Certification Payment and Fees</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>To process your Initial, Renewal, and/or Specialty Certification application, please see the following fees associated with each certification pathway:</p>
+              <ul>
+                <li><strong>Generalist:</strong> $125.00 (Grandfathering or Formalized Core Competency Training; Renewal Certification)</li>
+                <li><strong>Specialist:</strong> $10.00 for each requested NMDOH OCHW endorsed content area</li>
+                <li><strong>Specialty I:</strong> $135.00 for an applicant who is first certified as a Generalist and has received formal training in one specialty field.</li>
+                <li><strong>Specialty II:</strong> $145.00 for an applicant who is first certified as a Generalist and has received formal training in two specialty fields.</li>
+                <li><strong>Specialty III:</strong> $155.00 for an applicant who is first certified as a Generalist and has received formal training in three specialty fields.</li>
+              </ul>
+
+              <div class="tip"><strong>Submission Guidelines:</strong></div>
+              <p>Please submit fees in the form of a personal check, money order, or cashier's check to the following address:</p>
+              <p style="margin:.4rem 0 0">
+                NM Department of Health-Public Health Division<br>
+                Attn: Office of Community Health Workers<br>
+                5300 Homestead Rd NE, STE 300<br>
+                Albuquerque, NM 87110<br>
+                Account: XXXXXX7789
+              </p>
+              <p style="margin:.6rem 0 0"><strong>Note:</strong> Please keep a copy of all submitted materials and proof of mailing. All fees are non-refundable.</p>
+            </div>
+          </div>
+
+          <!-- Background Screening -->
+          <div class="item" id="background-screening-item">
+            <button type="button" aria-expanded="false">
+              <span>Background Screening for CHW Certification</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>
+                Once our office has received your application and performs a thorough review meeting all state CHW requirements for eligibility certification,
+                a background check will be required for next steps. The applicant will be prompted to complete your background check.
+                The fee for the required background check is <strong>$59.00</strong>.
+              </p>
+              <p>
+                Please be aware that background checks are due every four (4) year cycle to ensure certification is in compliance with the New Mexico Department of Public Safety protocols.
+                The results of the background check are confidential and is the final determining factor in becoming certified by the State of NM.
+              </p>
+              <p><strong>If you have any questions and/or concerns, please circle back to the Office of Community Health Workers.</strong></p>
+            </div>
+          </div>
+
+          <!-- FAQs -->
+          <div class="item" id="faqs-item">
+            <button type="button" aria-expanded="false">
+              <span>FAQ’s: Frequently Asked Questions about state CHW Certification</span>
+              <span class="icon">+</span>
+            </button>
+            <div class="panel" role="region">
+              <p>Please look at our helpful Frequently Asked Questions for answers to many of the most common questions we receive about certification.</p>
+
+              <ul>
+                <li><strong>Q. What is a Community Health Worker, (CHW)?</strong><br>
+                  <strong>A.</strong> CHWs, also known as a tribal community health representative or promotor/a, are frontline public health workers who are trusted members of the community. They may live in the same community and/or have an unusually close understanding of the community they serve. They are critical members of health care delivery teams who may focus on the social aspects of care that support and enhance critical clinical activities such as diagnosis, treatment, or clinical procedures. Because CHWs are trusted members of the community they serve and may face the same barriers as the individuals and families they serve, and because they often share the same language, ethnicity, cultural, educational, and class background, they are uniquely positioned to act as bridges between their communities and the health and social community service systems.
+                </li>
+
+                <li><strong>Q. What are the job duties of the CHW?</strong><br>
+                  <strong>A.</strong> A CHW provides support services and assists individuals to navigate the health care system. A CHW encourages self-sufficiency by providing education on self-care and strategies to improve health by helping them understand their health condition(s) and optimize individual, family and community outcomes. As members of care delivery teams, CHWs can assist individuals in managing their own health by keeping medical appointments, screenings, treatment and follow up care. A CHW must deliver health information using culturally appropriate terms and concepts. Many CHWs community outreach includes traveling to individual homes or meeting with clients outside of the clinical setting. Job duties may vary depending on the requirements of the employer.
+                </li>
+
+                <li><strong>Q. What is the role of the NM Department of Health (NMDOH), Office of Community Health Workers (OCHW)?</strong><br>
+                  <strong>A.</strong> The Office of Community Health Workers (OCHW) is charged with developing a statewide training and certification process for CHWs, processing applications and issuing certificates. The mission of the OCHW is to fully integrate CHWs into New Mexico health and social systems of care by providing training, certification, advocacy, and support.
+                </li>
+
+                <li><strong>Q. What are core competencies?</strong><br>
+                  <strong>A.</strong> A combination of qualities, practical skills and knowledge essential to the provision of services by community health workers, demonstration of which is required for certification.
+                </li>
+
+                <li><strong>Q. What are the required competencies?</strong><br>
+                  <strong>A.</strong> The CHW Profession, Effective Communication, Interpersonal skills, Health Coaching, Service Coordination, Advocacy, Technical Teaching, Community Health Outreach, Community Knowledge &amp; Assessment. Clinical Support Skills is optional for those who desire to enhance their skills or whose jobs require it. (A description of the competencies is attached to the application).
+                </li>
+
+                <li><strong>Q. What does “Grandfathering” mean?</strong><br>
+                  <strong>A.</strong> Grandfathering is a process by which experienced CHW professionals will obtain certification, if they were practicing CHWs before the Community Health Workers Act became law.
+                </li>
+
+                <li><strong>Q. Will there be a grandfathering option for experienced CHWs?</strong><br>
+                  <strong>A.</strong> Yes
+                </li>
+
+                <li><strong>Q. What are the criteria to apply for state certification through the grandfathering process?</strong><br>
+                  <strong>A.</strong>
+                  <ul>
+                    <li>Proof that applicant is at least 18 years of age</li>
+                    <li>Verification of proficiency in the core competencies through training or experience</li>
+                    <li>Two letters of reference</li>
+                    <li>2000 hours of work or volunteer experience as a CHW in the Two (2) years prior to application or at least half-time paid or volunteer employment as a CHW in the last five (5) years prior to application</li>
+                    <li>Verification of education, including documentation that the applicant has at least a high school diploma or certificate of high school equivalency.</li>
+                  </ul>
+                </li>
+
+                <li><strong>Q. Will certification or licensure be required?</strong><br>
+                  <strong>A.</strong> Voluntary state certification will be offered to those meeting the core competencies and who apply for certification. Licensure is not offered or required.
+                </li>
+
+                <li><strong>Q. Is U.S. citizenship required?</strong><br>
+                  <strong>A.</strong> No, citizenship is not required; however, applicants have to submit to a national background check and may be required to meet the requirements of an employer, which may include proof of citizenship.
+                </li>
+
+                <li><strong>Q. Do you have to be a New Mexico resident to be certified in New Mexico?</strong><br>
+                  <strong>A.</strong> Yes
+                </li>
+
+                <li><strong>Q. Is there reciprocity between states?</strong><br>
+                  <strong>A.</strong> Yes, the NMAC new ruling includes certification reciprocity between states.
+                </li>
+
+                <li><strong>Q. Will there be a fee for certification?</strong><br>
+                  <strong>A.</strong> Yes. A $125.00 fee for initial certification as a Generalist is required to be submitted with the application. Specialty tracks will require an additional $10.00 per Specialty. Fees are nonrefundable.
+                </li>
+
+                <li><strong>Q. What type of payment will be accepted?</strong><br>
+                  <strong>A.</strong> Personal check, money orders or cashier's check. No cash will be accepted.
+                </li>
+
+                <li><strong>Q. Will a background check be required?</strong><br>
+                  <strong>A.</strong> Yes, approved applicants will be sent instructions by the Department for completing the background check process. A $59.00 fee will be required and paid to the entity conducting the background check.
+                </li>
+
+                <li><strong>Q. What levels of certification will be offered?</strong><br>
+                  <strong>A.</strong> Generalist; Specialist I, II, III. Certification as a Specialist I in Basic Clinical Support Skills is available for applicants applying for certification through grandfathering.
+                </li>
+
+                <li><strong>Q. Who determines eligibility requirements for CHW certification?</strong><br>
+                  <strong>A.</strong> The New Mexico CHW Certification Board
+                </li>
+
+                <li><strong>Q. What type of credential will a community health worker receive?</strong><br>
+                  <strong>A.</strong> Individuals who meet all eligibility requirements, including a background check, will receive a Certified Community Health Worker (CCHW) certificate. A CCHW shall carry the CCHW card and present it upon request.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+        </section>
+
+        <div class="links">
+          <a href="https://www.nmhealth.org/about/phd/pchb/ochw/cert" target="_blank" rel="noopener">Certification portal</a>
         </div>
-
-        <div class="tip"><strong>Tip:</strong> Collect references and certificates now to speed up application review.</div>
       </div>
-    </div>
 
-    <div class="item">
-      <button type="button" aria-expanded="false">
-        <span>Two-Path Certification Process</span>
-        <span class="icon">+</span>
-      </button>
-      <div class="panel" role="region">
-        <ul>
-          <li><strong>Grandfathering process</strong> for experienced CHWs meeting state criteria</li>
-          <li><strong>Formalized training</strong>: 100 hours of Core Competency instruction</li>
-        </ul>
-
-        <div class="imgrow" aria-label="Two certification paths visuals">
-          <figure class="imgcard">
-            <img src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=800&auto=format&fit=crop" alt="Experienced CHW mentoring others" />
-            <figcaption class="imgcap">Grandfathering: Experience-based</figcaption>
-          </figure>
-          <figure class="imgcard">
-            <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?q=80&w=800&auto=format&fit=crop" alt="Instructor-led curriculum" />
-            <figcaption class="imgcap">Formal Training: 100 hrs core</figcaption>
-          </figure>
-          <figure class="imgcard">
-            <img src="https://images.unsplash.com/photo-1517520287167-4bbf64a00d66?q=80&w=800&auto=format&fit=crop" alt="Classroom group learning" />
-            <figcaption class="imgcap">Competency development</figcaption>
-          </figure>
+      <!-- Step 2 -->
+      <div class="card">
+        <p class="step-title">Step 2 — Obtain your NPI in NPPES</p>
+        <div class="detail">Every provider must have an active NPI.</div>
+        <div class="links">
+          <a href="https://nppes.cms.hhs.gov/NPPES/Welcome.do" target="_blank" rel="noopener">NPPES — Get/Manage NPI</a>
         </div>
+      </div>
 
-        <p>Learn more &amp; apply: <a href="https://www.nmhealth.org/about/phd/pchb/ochw/cert" target="_blank" rel="noopener">NM DOH — CHW Certification</a></p>
+      <!-- Step 3 -->
+      <div class="card">
+        <p class="step-title">Step 3 — Enroll with New Mexico Medicaid (PT 462 / Specialty 230)</p>
+        <div class="detail">Complete the online application and attach the correct PPA.</div>
+        <div class="links">
+          <a href="https://yes.nm.gov/nmhr/s/?language=en_US" target="_blank" rel="noopener">NM Medicaid Provider Portal</a>
+          <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/ProvEnrollPacket/MAD312.pdf" target="_blank" rel="noopener">MAD-312 (individual within group)</a>
+          <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/ProvEnrollPacket/MAD335.pdf" target="_blank" rel="noopener">MAD-335 (group/org/direct pay)</a>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="card">
+        <p class="step-title">Step 4 — Obtain DOH Attestation (OCHW)</p>
+        <div class="detail">Request an attestation that you/your group may bill Medicaid for CHW/CHR services.</div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="card">
+        <p class="step-title">Step 5 — Verify member eligibility &amp; document encounters</p>
+        <div class="detail">Check eligibility before services; record start/stop times, activities, and outcomes; coordinate with billing.</div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="card">
+        <p class="step-title">Step 6 — Standing Order Form (each DOS)</p>
+        <div class="detail">
+          Attach <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/MAD872.pdf" target="_blank" rel="noopener">MAD-872</a> with the claim.
+          Confirms services fall under the statewide CHW Standing Order.
+        </div>
       </div>
     </div>
   </section>
@@ -338,76 +616,6 @@
     </div>
   </section>
 
-  <!-- Steps -->
-  <section class="steps" aria-label="Enrollment steps">
-    <h2>Enrolling in Medicaid as a Provider — Interactive Checklist</h2>
-    <div class="progress" aria-label="completion progress">
-      <div class="bar" id="progressBar" style="width:0%"></div>
-    </div>
-
-    <div class="checklist" id="checklist">
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 1 — Become a certified CHW</span>
-        </label>
-        <div class="detail">Complete CHW certification through NM DOH OCHW.</div>
-        <div class="links">
-          <a href="https://www.nmhealth.org/about/phd/pchb/ochw/cert" target="_blank" rel="noopener">Certification portal</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 2 — Obtain your NPI in NPPES</span>
-        </label>
-        <div class="detail">Every provider must have an active NPI.</div>
-        <div class="links">
-          <a href="https://nppes.cms.hhs.gov/NPPES/Welcome.do" target="_blank" rel="noopener">NPPES — Get/Manage NPI</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 3 — Enroll with New Mexico Medicaid (PT 462 / Specialty 230)</span>
-        </label>
-        <div class="detail">Complete the online application and attach the correct PPA.</div>
-        <div class="links">
-          <a href="https://nmmedicaid.portal.conduent.com/static/index.htm" target="_blank" rel="noopener">NM Medicaid Provider Portal</a>
-          <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/ProvEnrollPacket/MAD312.pdf" target="_blank" rel="noopener">MAD-312 (individual within group)</a>
-          <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/ProvEnrollPacket/MAD335.pdf" target="_blank" rel="noopener">MAD-335 (group/org/direct pay)</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 4 — Obtain DOH Attestation (OCHW)</span>
-        </label>
-        <div class="detail">Request an attestation that you/your group may bill Medicaid for CHW/CHR services.</div>
-      </div>
-
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 5 — Verify member eligibility & document encounters</span>
-        </label>
-        <div class="detail">Check eligibility before services; record start/stop times, activities, and outcomes; coordinate with billing.</div>
-      </div>
-
-      <div class="card">
-        <label>
-          <input type="checkbox" data-weight="1" />
-          <span>Step 6 — Standing Order Form (each DOS)</span>
-        </label>
-        <div class="detail">Attach <a href="https://nmmedicaid.portal.conduent.com/static/PDFs/MAD872.pdf" target="_blank" rel="noopener">MAD-872</a> with the claim. Confirms services fall under the statewide CHW Standing Order.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Tools -->
   <section class="tools" aria-label="quick tools and downloads">
     <div class="tool">
       <h3>Download: Standing Order (MAD-872)</h3>
@@ -417,63 +625,37 @@
     <div class="tool">
       <h3>Check Eligibility</h3>
       <p class="muted">Verify member eligibility in the Medicaid portal before each encounter.</p>
-      <a class="btn alt" href="https://nmmedicaid.portal.conduent.com/static/index.htm" target="_blank" rel="noopener">Provider Portal</a>
-    </div>
-    <div class="tool">
-      <h3>Print Mode</h3>
-      <p class="muted">Toggle a simplified style for printing or saving as PDF.</p>
-      <button class="btn" id="printToggle" type="button" aria-pressed="false" aria-label="Toggle print-friendly mode">
-        Toggle Print-Friendly
-      </button>
+      <a class="btn alt" href="https://yes.nm.gov/nmhr/s/?language=en_US" target="_blank" rel="noopener">Provider Portal</a>
     </div>
   </section>
 
   <footer role="contentinfo">
-    <strong>UNM Health Sciences</strong> · Full-width interactive guide for CHW/CHR certification & Medicaid enrollment.
+    <strong>UNM Health Sciences</strong> · Full-width interactive guide for CHW/CHR certification &amp; Medicaid enrollment.
   </footer>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.accordion .item button').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const expanded = btn.getAttribute('aria-expanded') === 'true';
-        btn.setAttribute('aria-expanded', String(!expanded));
-        const icon = btn.querySelector('.icon');
-        const panel = btn.parentElement.querySelector('.panel');
-        if(expanded){ panel.style.display = 'none'; icon.textContent = '+'; }
-        else{ panel.style.display = 'block'; icon.textContent = '–'; }
-      });
+
+    // Accordion toggle (all dropdowns under Step 1)
+    document.querySelectorAll('.accordion .item > button').forEach(btn=>{
+      btn.addEventListener('click', ()=>toggleAccordion(btn));
     });
 
-    const boxes = Array.from(document.querySelectorAll('.checklist input[type="checkbox"]'));
-    const bar = document.getElementById('progressBar');
-    function recalc(){
-      const total = boxes.reduce((s,b)=>s + (parseFloat(b.dataset.weight)||1), 0);
-      const done  = boxes.reduce((s,b)=>s + (b.checked ? (parseFloat(b.dataset.weight)||1) : 0), 0);
-      const pct = total ? Math.round((done/total)*100) : 0;
-      bar.style.width = pct + '%';
-      bar.title = pct + '% complete';
-    }
-    boxes.forEach(b=>b.addEventListener('change', recalc));
-    recalc();
-
-    const printBtn = document.getElementById('printToggle');
-    if (printBtn) {
-      let printMode = document.body.classList.contains('print-mode');
-      syncButton();
-      printBtn.addEventListener('click', () => {
-        printMode = !printMode;
-        document.body.classList.toggle('print-mode', printMode);
-        syncButton();
-      });
-      function syncButton() {
-        printBtn.setAttribute('aria-pressed', String(printMode));
-        printBtn.textContent = printMode ? 'Exit Print Mode' : 'Toggle Print-Friendly';
-        printBtn.style.transform = 'scale(0.98)';
-        setTimeout(() => (printBtn.style.transform = ''), 90);
+    function toggleAccordion(btn){
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const icon = btn.querySelector('.icon');
+      const panel = btn.parentElement.querySelector('.panel');
+      if(expanded){
+        panel.style.display = 'none';
+        icon.textContent = '+';
+      }else{
+        panel.style.display = 'block';
+        icon.textContent = '–';
       }
     }
 
+    // Scope toggle
     const bBill = document.getElementById('btn-billable');
     const bNon  = document.getElementById('btn-nonbillable');
     const pBill = document.getElementById('panel-billable');
@@ -501,4 +683,3 @@
 </script>
 </body>
 </html>
-
