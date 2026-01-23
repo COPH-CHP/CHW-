@@ -41,9 +41,8 @@
     }
     .tab-btn:hover{background:rgba(255,255,255,.24);transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
     .tab-btn[aria-selected="true"]{background:#fff;color:#0f172a}
-
-    /* ===== CHP CREDIT BELOW BANNER (RIGHT-ALIGNED + BIGGER LOGO) ===== */
-    .chp-below-banner{
+    /* ===== CHP CREDIT BELOW BANNER (NEW) ===== */
+.chp-below-banner{
       width:100vw;
       margin-left:calc(50% - 50vw);
       margin-right:calc(50% - 50vw);
@@ -79,7 +78,7 @@
       .chp-below-banner img{height:52px;}
       .chp-below-banner .note{font-size:12px;white-space:normal;}
     }
-
+    /* Pop-in container */
     /* Pop-in container */
     .popin-wrap{
       width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);
@@ -266,8 +265,7 @@
    target="_blank" rel="noopener">
   <img src="CHP logo.png" alt="Center for Health Policy (CHP) Logo">
 </a>
-
-   <div class="note">
+      <div class="note">
   Created by 
   <a href="https://hsc.unm.edu/population-health/research-centers/center-for-health-policy.html"
      target="_blank" rel="noopener"
@@ -275,7 +273,6 @@
     Center for Health Policy (CHP)
   </a>
 </div>
-
   </section>
 
   <!-- Pop-in (appears below banner when a tab is clicked) -->
@@ -327,7 +324,8 @@
 
   <!-- ========= HIDDEN TEMPLATE: AGENCY GUIDE (hero → FAQ → footer) ========= -->
   <template id="agency-clone">
-    <!-- (your existing Agency Guide content unchanged) -->
+
+    <!-- Agency Readiness -->
     <section class="readiness-wrap" aria-labelledby="agency-readiness">
       <h2 id="agency-readiness" class="title">Agency Readiness Checklist</h2>
       <p class="intro">Before you recruit CHWs or submit a Medicaid claim, make sure your organization has the right systems in place.</p>
@@ -366,7 +364,234 @@
       </div>
     </section>
 
-    <!-- keep the rest of your agency guide exactly as-is -->
+    <!-- Enrolling CHWs -->
+    <section class="enroll-wrap">
+      <header class="enroll-head">
+        <h2>Enrolling CHWs in Medicaid (Agency Perspective)</h2>
+        <span class="enroll-badge">Step-by-Step</span>
+      </header>
+
+      <div class="enroll-card">
+        <ol class="enroll-list">
+          <li class="enroll-item">
+            <div class="enroll-icon" aria-hidden="true">🎓</div>
+            <div class="enroll-text"><strong>Confirm CHW is certified by NM DOH.</strong> Ensure the worker meets DOH competency requirements and has active certification documentation on file.</div>
+            <img class="enroll-thumb" src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=80" alt="Training materials" />
+          </li>
+          <li class="enroll-item">
+            <div class="enroll-icon" aria-hidden="true">🆔</div>
+            <div class="enroll-text"><strong>Confirm CHW has an individual NPI.</strong> The CHW/CHR must register for their own NPI; the agency keeps this on record for claims.</div>
+            <img class="enroll-thumb" src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="NPI portal" />
+          </li>
+          <li class="enroll-item">
+            <div class="enroll-icon" aria-hidden="true">📝</div>
+            <div class="enroll-text"><strong>Ensure CHW has completed the DOH Attestation process.</strong> Keep the attestation form with the personnel record and reference it when billing. <em>(Details coming soon.)</em></div>
+            <img class="enroll-thumb" src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?q=80&w=1200&auto=format&fit=crop" alt="Attestation paperwork" />
+          </li>
+          <li class="enroll-item">
+            <div class="enroll-icon" aria-hidden="true">🔗</div>
+            <div class="enroll-text"><strong>Link CHW as a rendering provider</strong> under your agency in the NM Medicaid Provider Portal so the CHW appears on claims.</div>
+            <img class="enroll-thumb" src="https://images.unsplash.com/photo-1553729784-e91953dec042?auto=format&fit=crop&w=1200&q=80" alt="Provider portal linking" />
+          </li>
+        </ol>
+
+        <div class="enroll-ctas">
+          <a class="enroll-btn" href="https://yes.nm.gov/nmhr/s/provider?language=en_US" target="_blank" rel="noopener">Open NM Medicaid Provider Portal</a>
+          <a class="enroll-btn secondary" href="https://nppes.cms.hhs.gov/#/" target="_blank" rel="noopener">Apply for Individual NPI</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Covered / Non-Covered -->
+    <section class="unm-services">
+      <h2 class="title">Covered Services</h2>
+      <div class="grid">
+        <article class="unm-card">
+          <img class="hero" src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/person1.png" alt="Person getting assistance with documents and navigation">
+          <div class="head turq">🧭 System Navigation</div>
+          <div class="body">
+            <ol>
+              <li>Address basic needs such as food, shelter and safety</li>
+              <li>Navigate health and social service system</li>
+              <li>Facilitate enrollment in health programs and services</li>
+              <li>Translate and interpret</li>
+              <li>Arrange transportation</li>
+            </ol>
+            <div class="img-row">
+              <div class="thumb">
+                <img src="https://images.unsplash.com/photo-1553729784-e91953dec042?auto=format&fit=crop&w=1200&q=80" alt="Hands holding benefits forms">
+                <div class="cap">Benefits navigation</div>
+              </div>
+              <div class="thumb">
+                <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1200&q=80" alt="Public transit bus">
+                <div class="cap">Transportation help</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="unm-card">
+          <img class="hero" src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/chatgpt-image-aug-18-2025-11_21_36-am.png" alt="Coach discussing goals with client">
+          <div class="head turq">🩺 Health Promotion &amp; Health Coaching</div>
+          <div class="body">
+            <ol>
+              <li>Identify individual strengths and needs</li>
+              <li>Set goals and provide action planning</li>
+              <li>Teach health promotion and prevention</li>
+              <li>Coach on problem solving, self-care, and self-management</li>
+              <li>Utilize harm reduction principles</li>
+              <li>Support and model behavior change</li>
+              <li>Promote understanding of health information and materials</li>
+              <li>Promote self-sufficiency</li>
+              <li>Lead educational and support groups</li>
+              <li>Teach families how to self-advocate</li>
+            </ol>
+            <div class="img-row">
+              <div class="thumb">
+                <img src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/chatgpt-image-aug-18-2025-11_25_33-am.png" alt="Checklist and goal setting">
+                <div class="cap">Goal setting</div>
+              </div>
+              <div class="thumb">
+                <img src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/chatgpt-image-aug-18-2025-11_27_32-am.png" alt="Small group coaching session">
+                <div class="cap">Group coaching</div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="unm-card">
+          <img class="hero" src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?auto=format&fit=crop&w=1600&q=80" alt="Medical professional taking vital signs">
+          <div class="head turq">🏥 Clinical Support</div>
+          <div class="body">
+            <ol>
+              <li>Conduct home safety assessments</li>
+              <li>Measure and respond to vital signs</li>
+              <li>Promote follow-up / maintenance of treatment plans</li>
+              <li>Provide feedback to medical providers</li>
+              <li>Coordinate referrals, care, and follow-up</li>
+            </ol>
+          </div>
+        </article>
+      </div>
+
+      <h2 class="title" style="background:#D6A461">Non-Covered Services</h2>
+      <article class="unm-accord">
+        <details open>
+          <summary>🚫 Activities Not Included</summary>
+          <div class="content">
+            <ol>
+              <li>Population health activities such as community outreach, community organizing, community needs assessments, and community advocacy</li>
+              <li class="has-note">
+                Duplicative services such as care coordination activities including performing Health Risk Assessments (HRAs) and Comprehensive Needs Assessments (CNAs)
+                <div class="note-box">
+                  These services may be covered when a contract is in place with an MCO to take this responsibility on as a delegated care coordination entity.
+                </div>
+              </li>
+              <li>Transportation of members</li>
+              <li>Personal and in-home care services such as childcare, assistance with Activities of Daily Living (ADLs), and housekeeping</li>
+            </ol>
+          </div>
+        </details>
+      </article>
+    </section>
+
+    <!-- Billing -->
+    <section class="chw-billing">
+      <div class="title">Billing for CHW Services</div>
+      <details open>
+        <summary><span class="lead-icon">1</span> Claims Submission <span class="badge badge-teal">CMS-1500</span></summary>
+        <div class="section-body">
+          <div class="note">
+            Use the <strong>CMS-1500</strong> professional claim form. General instructions are on the
+            <a href="https://nmmedicaid.portal.conduent.com/static/index.htm" target="_blank" rel="noopener">New Mexico Medicaid Portal</a>.
+          </div>
+          <ol>
+            <li>Submit claims with taxonomy <strong>172V00000X</strong>.</li>
+            <li>Enter the CHW/CHR’s <strong>individual NPI</strong> in the <em>Rendering Provider</em> field.</li>
+            <li>Enter the clinic/agency <strong>billing NPI</strong> in the <em>Billing Provider</em> field when services are provided through a clinic.</li>
+          </ol>
+          <div class="cards">
+            <figure class="img-card">
+              <img src="https://images.unsplash.com/photo-1584982751601-97dcc096659c?q=80&w=1200&auto=format&fit=crop" alt="Filling a CMS-1500 form">
+              <figcaption class="cap">CMS-1500 professional claim</figcaption>
+            </figure>
+            <figure class="img-card">
+              <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1200&auto=format&fit=crop" alt="NPI &amp; taxonomy entry">
+              <figcaption class="cap">Rendering NPI + Taxonomy</figcaption>
+            </figure>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="lead-icon">2</span> Reimbursement <span class="badge badge-cherry">Fee Schedule</span></summary>
+        <div class="section-body"><p>Reimbursement methodology is at the <strong>fee schedule rate</strong>.</p></div>
+      </details>
+
+      <details>
+        <summary><span class="lead-icon">3</span> CPT Codes Billable by CHW/CHR</summary>
+        <div class="section-body">
+          <table class="cpt-table">
+            <thead><tr><th style="width:160px">Procedure Code</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><strong>98960</strong></td><td>Education and training for patient self-management, each 30 minutes</td></tr>
+              <tr><td><strong>98961</strong></td><td>Education and training for patient self-management, <strong>2–4 patients</strong>, each 30 minutes</td></tr>
+              <tr><td><strong>98962</strong></td><td>Education and training for patient self-management, <strong>5–8 patients</strong>, each 30 minutes</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="lead-icon dusk">4</span> Modifiers for CHW Services <span class="badge badge-dusk">Telehealth</span></summary>
+        <div class="section-body">
+          <ul>
+            <li><strong>GT</strong>: Interactive telecommunication</li>
+            <li><strong>95</strong>: Synchronous telemedicine service via real-time interactive audio &amp; video</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="lead-icon cherry">5</span> Reimbursement Limitations</summary>
+        <div class="section-body">
+          <ol>
+            <li>A CHW/CHR is limited to <strong>10 units (5 hours) per day</strong> of member-facing time.</li>
+            <li>A member is limited to <strong>16 units (8 hours) per 30-day period</strong> without prior authorization.</li>
+          </ol>
+        </div>
+      </details>
+    </section>
+
+    <!-- Learn More -->
+    <section class="chw-cta" aria-labelledby="learn-more-chw">
+      <h2 id="learn-more-chw">🌟 Want to Learn More?</h2>
+      <p>
+        Discover how to become a <strong>Certified &amp; Medicaid-Enrolled Community Health Worker (CHW/CHR)</strong> in New Mexico.
+        Empower your community, gain new skills, and make a lasting impact.
+      </p>
+      <a href="https://nmhealth.org/publication/view/form/9050/" target="_blank" rel="noopener" class="cta-btn">Start Your Journey</a>
+
+      <div class="img-strip" role="list">
+        <div class="thumb" role="listitem">
+          <img src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/training.png" alt="CHW training session with worksheets and laptops" />
+          <div class="caption">Training &amp; Certification</div>
+        </div>
+        <div class="thumb" role="listitem">
+          <img src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/charity.png" alt="Community support volunteer assisting a resident" />
+          <div class="caption">Helping the Community</div>
+        </div>
+        <div class="thumb" role="listitem">
+          <img src="https://koushiktripurari19986.wordpress.com/wp-content/uploads/2025/08/career_growth.png" alt="Career growth planning with charts and goals" />
+          <div class="caption">Career Growth</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer line -->
+    <footer role="contentinfo" style="text-align:center;padding:16px 12px;color:#222">
+      <strong>UNM Health Sciences</strong> · Full-width interactive guide for CHW/CHR certification &amp; Medicaid enrollment.
+    </footer>
   </template>
 
   <!-- ============ JS: Pop-in behavior ============ -->
