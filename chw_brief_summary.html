@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CHW Definition</title>
+  <style>
+    :root{
+      --turq:#007A87;
+      --cherry:#BA0C2F;
+      --bg:#f6f8fb;
+      --ink:#0f172a;
+      --muted:#475569;
+      --card:#ffffff;
+      --line:#e2e8f0;
+      --shadow:0 12px 26px rgba(2,6,23,.10);
+      --radius:18px;
+
+      /* flow highlights */
+      --red:#dc2626;
+      --yellow:#f59e0b;
+      --green:#16a34a;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      background: var(--bg);
+    }
+
+    /* ✅ FULL WIDTH (no max-width) */
+    .deck{
+      width:100%;
+      max-width:none;              /* CHANGED */
+      margin:0;
+      padding: 18px 16px 40px;     /* CHANGED: slightly more side padding */
+    }
+
+    /* Slide look */
+    .slide{
+      width:100%;
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 26px 26px;          /* CHANGED: more padding so it looks PPT */
+      margin: 16px 0;              /* CHANGED */
+    }
+
+    /* ✅ Make slides stretch edge-to-edge nicely on large screens */
+    @media (min-width: 1400px){
+      .deck{ padding-left: 28px; padding-right: 28px; }  /* CHANGED */
+      .slide{ padding: 30px 30px; }                      /* CHANGED */
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
+    .badge{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight:700;
+      font-size: 12px;
+      background: rgba(0,122,135,.10);
+      color: var(--turq);
+      border: 1px solid rgba(0,122,135,.18);
+    }
+    .badge.red{
+      background: rgba(186,12,47,.08);
+      color: var(--cherry);
+      border: 1px solid rgba(186,12,47,.18);
+    }
+
+    h1,h2{margin:0}
+    h1{font-size: 22px; letter-spacing:.2px}
+    h2{font-size: 18px}
+    .muted{color:var(--muted)}
+    .big{
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 900;
+      margin-top: 6px;
+      line-height: 1.1;
+    }
+
+    /* ✅ KPIs fill width better on wide screens */
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 12px;                   /* CHANGED */
+      margin-top: 14px;
+      width:100%;
+    }
+    @media (max-width: 820px){
+      .kpis{grid-template-columns:1fr}
+    }
+    .kpi{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px 14px;          /* CHANGED */
+      background: #fff;
+    }
+    .kpi .num{font-size: 28px; font-weight: 900}  /* CHANGED */
+    .kpi .lbl{font-size: 12px; color: var(--muted)}
+
+    .list{
+      margin: 12px 0 0 18px;
+      color: var(--ink);
+    }
+    .list li{margin: 6px 0}
+
+    .formula{
+      margin-top: 12px;
+      padding: 14px 14px;          /* CHANGED */
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(0,122,135,.06), rgba(186,12,47,.05));
+      font-weight: 800;
+      line-height: 1.35;
+    }
+
+    .foot{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    @media print{
+      body{background:#fff}
+      .slide{box-shadow:none; page-break-inside:avoid}
+      .deck{max-width:none; padding:0}
+    }
+
+    /* =======================
+       FLOWCHART (HTML/CSS)
+       ======================= */
+
+    /* ✅ make flowchart use full slide width */
+    .flow{
+      margin-top: 12px;
+      display:flex;
+      flex-direction:column;
+      align-items:stretch;         /* CHANGED: stretch instead of center */
+      gap: 14px;
+      width:100%;                  /* CHANGED */
+    }
+
+    /* ✅ nodes fill the entire available width */
+    .node{
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid rgba(2,6,23,.06);
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 10px 22px rgba(2,6,23,.08);
+    }
+
+    .node .bar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px 16px;          /* CHANGED */
+      background: linear-gradient(180deg, rgba(0,122,135,.14), rgba(0,122,135,.06));
+      border-bottom: 1px solid var(--line);
+      font-weight: 900;
+    }
+
+    .node .bar .tag{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,122,135,.25);
+      color: var(--turq);
+      background: rgba(0,122,135,.08);
+      white-space:nowrap;
+    }
+
+    .node .body{
+      padding: 16px 16px 16px;     /* CHANGED */
+    }
+
+    /* ✅ connector centered but doesn't restrict width */
+    .connector{
+      width:100%;                  /* CHANGED */
+      height: 58px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .hl{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 950;
+      border: 1px solid rgba(2,6,23,.08);
+      margin: 2px 6px 2px 0;
+      white-space:nowrap;
+    }
+    .hl.red{background: rgba(220,38,38,.12); color: var(--red); border-color: rgba(220,38,38,.25)}
+    .hl.yellow{background: rgba(245,158,11,.18); color: #7a4a00; border-color: rgba(245,158,11,.32)}
+    .hl.green{background: rgba(22,163,74,.14); color: var(--green); border-color: rgba(22,163,74,.26)}
+
+    .note{
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background:#fff;
+      color: var(--muted);
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="deck">
+
+    <!-- SLIDE 1 -->
+    <section class="slide" id="slide1">
+      <div class="topbar">
+        <span class="badge">Slide 1</span>
+        <span class="badge red">2025 (Jan–Aug)</span>
+      </div>
+      <h1>Whole Claims Dataset</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Whole claims of <b>2025</b> until <b>August</b> (this is the starting sample).
+      </p>
+      <div class="big">Whole Claims of 2025 until August</div>
+
+      <div class="foot">
+        <span></span>
+        <span class="muted"></span>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" id="slide2">
+      <div class="topbar">
+        <span class="badge">Slide 2</span>
+        <span class="badge">Definition</span>
+      </div>
+
+      <h1>CHW Definition</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Built using the <b>Letter of Direction (Aug 2025 edition)</b> and refined with input from a
+        <b>Community Health Representative</b> experienced in billing.
+      </p>
+
+      <ul class="list">
+        <li><b>Provider signal</b>: rendering provider specialty/type = <b>230</b> OR provider name ends with <b>“CHW”</b></li>
+        <li><b>Service signal</b>: procedure code in <b>98960</b>, <b>98961</b>, <b>98962</b></li>
+        <li><b>Social-risk signal</b>: <b>Z-code</b> in <b>Diagnosis 1</b> or <b>Diagnosis 2</b></li>
+      </ul>
+
+      <div class="formula">
+        Rule used for the cohort:<br/>
+        ( <b>prov_cd = 9896</b> AND <b>Z-code</b> ) OR ( <b>CHW name</b> OR <b>specialty = 230</b> )
+      </div>
+
+      <div class="kpis" aria-label="counts">
+        <div class="kpi">
+          <div class="num">688</div>
+          <div class="lbl">N1 = claims flagged by the rule</div>
+        </div>
+        <div class="kpi">
+          <div class="num">33</div>
+          <div class="lbl">N2 = providers manually reviewed</div>
+        </div>
+        <div class="kpi">
+          <div class="num">Aug 2025</div>
+          <div class="lbl">Letter of Direction edition used</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" id="slide3">
+      <div class="topbar">
+        <span class="badge">Slide 3</span>
+        <span class="badge">Validation</span>
+      </div>
+
+      <h1>Manual Review Result</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Review summary from the 33 reviewed providers.
+      </p>
+
+      <div class="kpis">
+        <div class="kpi">
+          <div class="num">33</div>
+          <div class="lbl">Reviewed</div>
+        </div>
+        <div class="kpi">
+          <div class="num">4</div>
+          <div class="lbl">Doubtful</div>
+        </div>
+        <div class="kpi">
+          <div class="num">29</div>
+          <div class="lbl">Confirmed CHW</div>
+        </div>
+      </div>
+
+      <div class="formula" style="margin-top:14px;">
+        Conclusion: <b>29</b> confirmed CHW (from reviewed sample).
+      </div>
+    </section>
+
+    <!-- SLIDE 4 -->
+    <section class="slide" id="slide4">
+      <div class="topbar">
+        <span class="badge">Slide 4</span>
+        <span class="badge">Flowchart</span>
+      </div>
+
+      <h1>Flowchart (Vertical)</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        This flowchart is drawn directly in HTML/CSS (no images) and connects Step 1 → Step 2 → Step 3.
+        Highlights: <span class="hl red">N1=688 (TCNs/claims)</span>
+        <span class="hl yellow">N2=33 (providers)</span>
+        <span class="hl green">29 confirmed</span>
+      </p>
+
+      <div class="flow" aria-label="CHW flowchart">
+
+        <!-- Node 1 -->
+        <section class="node" aria-label="Flow Step 1">
+          <div class="bar">
+            <div>Step 1 — Starting Dataset</div>
+            <span class="tag">2025 (Jan–Aug)</span>
+          </div>
+          <div class="body">
+            <div class="big">Whole Claims of 2025 until August</div>
+            <div class="muted">Start with the full claims file (N0).</div>
+          </div>
+        </section>
+
+        <div class="connector" aria-hidden="true">
+          <svg width="26" height="58" viewBox="0 0 26 58" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 0 v40" stroke="rgba(15,23,42,.45)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M5 40 L13 56 L21 40" fill="none" stroke="rgba(15,23,42,.45)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Node 2 -->
+        <section class="node" aria-label="Flow Step 2">
+          <div class="bar">
+            <div>Step 2 — Apply CHW Rule</div>
+            <span class="tag">Definition</span>
+          </div>
+          <div class="body">
+            <div style="font-weight:950; font-size:18px;">Flag CHW using provider + service + diagnosis signals</div>
+            <ul class="list">
+              <li><b>Provider signal</b>: rndr type = <b>230</b> OR provider name ends with <b>“CHW”</b></li>
+              <li><b>Service signal</b>: proc = <b>98960</b> / <b>98961</b> / <b>98962</b></li>
+              <li><b>Diagnosis signal</b>: <b>Z-code</b> in Diagnosis 1 or 2</li>
+              <li><b>Rule used</b>: (prov_cd = <b>9896</b> AND Z-code) OR (CHW name OR specialty = <b>230</b>)</li>
+            </ul>
+
+            <div style="margin-top:10px;">
+              <span class="hl red">N1 (TCNs/claims flagged): 688</span>
+              <span class="hl yellow">N2 (providers reviewed): 33</span>
+            </div>
+          </div>
+        </section>
+
+        <div class="connector" aria-hidden="true">
+          <svg width="26" height="58" viewBox="0 0 26 58" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 0 v40" stroke="rgba(15,23,42,.45)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M5 40 L13 56 L21 40" fill="none" stroke="rgba(15,23,42,.45)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <!-- Node 3 -->
+        <section class="node" aria-label="Flow Step 3">
+          <div class="bar">
+            <div>Step 3 — Manual Review Outcome</div>
+            <span class="tag">Validation</span>
+          </div>
+          <div class="body">
+            <div style="font-weight:950; font-size:18px;">Manual review of providers</div>
+
+            <div style="margin-top:10px;">
+              <span class="hl yellow">Reviewed: 33</span>
+              <span class="hl yellow">Doubtful: 4</span>
+              <span class="hl green">Confirmed CHW: 29</span>
+            </div>
+
+            <div class="note">
+              <b>Result:</b> From 33 reviewed providers, 4 were doubtful → <b style="color:var(--green)">29 confirmed CHW</b>.
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="foot">
+        <span>Aligned with Letter of Direction (Aug 2025 edition) + billing-experienced CHR feedback.</span>
+        <span>Now uses full browser width.</span>
+      </div>
+    </section>
+
+  </main>
+</body>
+</html>
