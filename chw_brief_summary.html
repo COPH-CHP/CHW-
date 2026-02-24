@@ -43,7 +43,7 @@
       width: 100%;
       max-width: 1800px;
       margin: 0 auto;
-      padding: 16px 8px 40px; /* smaller side padding */
+      padding: 16px 8px 40px;
     }
 
     /* Slide look */
@@ -172,14 +172,15 @@
 
 <body>
   <main class="deck">
-<header style="padding: 6px 6px 18px; text-align: center;">
-  <h1 style="margin:0; font-size: clamp(32px, 3.5vw, 48px); font-weight: 950; letter-spacing:.3px;">
-    CHW Definition
-  </h1>
-  <p style="margin:8px 0 0; color: var(--muted); font-weight: 650;">
-    Claims-based definition summary (2025 through Aug)
-  </p>
-</header>
+    <header style="padding: 6px 6px 18px; text-align: center;">
+      <h1 style="margin:0; font-size: clamp(32px, 3.5vw, 48px); font-weight: 950; letter-spacing:.3px;">
+        CHW Definition
+      </h1>
+      <p style="margin:8px 0 0; color: var(--muted); font-weight: 650;">
+        Claims-based definition summary (2025 through Aug)
+      </p>
+    </header>
+
     <!-- SLIDE 1 -->
     <section class="slide" id="slide1">
       <div class="topbar"></div>
@@ -213,7 +214,6 @@
       <ul class="list">
         <li><b>Provider signal</b>: rendering provider specialty/type = <b>230</b> OR provider name ends with <b>“CHW”</b></li>
 
-        <!-- ✅ Added representation for 98960/98961/98962 -->
         <li>
           <b>Service signal</b> (98960–98962): <b>Education and Training for Patient Self-Management</b><br/>
           <span class="muted" style="font-size:13px;">
@@ -232,11 +232,11 @@
       <div class="kpis" aria-label="counts">
         <div class="kpi">
           <div class="num">688</div>
-          <div class="lbl">No of claims flagged by the rule</div>
+          <div class="lbl">No. of claims flagged by the rule</div>
         </div>
         <div class="kpi">
           <div class="num">33</div>
-          <div class="lbl">No of providers manually reviewed</div>
+          <div class="lbl">No. of providers manually reviewed</div>
         </div>
         <div class="kpi">
           <div class="num">Aug 2025</div>
@@ -279,15 +279,7 @@
       <div class="topbar"></div>
 
       <h1>Flowchart (Full View)</h1>
-      <p class="muted" style="margin:8px 0 0;">
-        <span class="hl red">No of claims = 688</span>
-        <span class="hl yellow">No of providers = 33</span>
-        <span class="hl green">29 confirmed</span>
-        &nbsp;•&nbsp;
-        <a href="https://www.hca.nm.gov/wp-content/uploads/25-10-Implementation-of-CHW-and-CHR-Updates.pdf" target="_blank" rel="noopener">
-          Letter of Direction 2025 Supplement (PDF)
-        </a>
-      </p>
+      
 
       <div style="margin-top:12px;">
         <svg class="chart" id="flowSvg" xmlns="http://www.w3.org/2000/svg"
@@ -373,47 +365,47 @@
           <rect class="box boxT" x="60"  y="240" width="360" height="140"/>
           <text class="title" x="240" y="284" text-anchor="middle">9896 codes</text>
           <text class="mono"  x="240" y="318" text-anchor="middle">
-            No of claims: <tspan class="n1">1056</tspan>
+            No. of claims: <tspan class="n1">1056</tspan>
           </text>
           <text class="mono"  x="240" y="346" text-anchor="middle">
-            No of providers: <tspan class="n2">48</tspan>
+            No. of providers: <tspan class="n2">48</tspan>
           </text>
 
           <rect class="box boxG" x="480" y="240" width="360" height="140"/>
           <text class="title" x="660" y="284" text-anchor="middle">Z-codes</text>
           <text class="mono"  x="660" y="318" text-anchor="middle">
-            No of claims: <tspan class="n1">26649</tspan>
+            No. of claims: <tspan class="n1">26649</tspan>
           </text>
           <text class="mono"  x="660" y="346" text-anchor="middle">
-            No of providers: <tspan class="n2">796</tspan>
+            No. of providers: <tspan class="n2">796</tspan>
           </text>
 
           <rect class="box boxG" x="900" y="240" width="360" height="140"/>
           <text class="title" x="1080" y="284" text-anchor="middle">9896 OR Z-codes</text>
           <text class="mono"  x="1080" y="318" text-anchor="middle">
-            No of claims: <tspan class="n1">27392</tspan>
+            No. of claims: <tspan class="n1">27392</tspan>
           </text>
           <text class="mono"  x="1080" y="346" text-anchor="middle">
-            No of providers: <tspan class="n2">815</tspan>
+            No. of providers: <tspan class="n2">815</tspan>
           </text>
 
           <!-- Row 3 (2 boxes) -->
           <rect class="box boxG" x="260" y="430" width="360" height="140"/>
           <text class="title" x="440" y="474" text-anchor="middle">9896 AND Z-codes</text>
           <text class="mono"  x="440" y="508" text-anchor="middle">
-            No of claims: <tspan class="n1">313</tspan>
+            No. of claims: <tspan class="n1">313</tspan>
           </text>
           <text class="mono"  x="440" y="536" text-anchor="middle">
-            No of providers: <tspan class="n2">22</tspan>
+            No. of providers: <tspan class="n2">22</tspan>
           </text>
 
           <rect class="box" x="700" y="430" width="360" height="140"/>
           <text class="title" x="880" y="474" text-anchor="middle">Others</text>
           <text class="mono"  x="880" y="508" text-anchor="middle">
-            No of claims: <tspan class="n1">27092</tspan>
+            No. of claims: <tspan class="n1">27092</tspan>
           </text>
           <text class="mono"  x="880" y="536" text-anchor="middle">
-            No of providers: <tspan class="n2">808</tspan>
+            No. of providers: <tspan class="n2">808</tspan>
           </text>
 
           <!-- Row 4 (provider signal boxes) -->
@@ -421,20 +413,20 @@
           <text class="title" x="360" y="674" text-anchor="middle">CHW prov_name OR</text>
           <text class="title" x="360" y="700" text-anchor="middle">specialty = 230</text>
           <text class="mono"  x="360" y="732" text-anchor="middle">
-            No of claims: <tspan class="n1">76</tspan>
+            No. of claims: <tspan class="n1">76</tspan>
           </text>
           <text class="mono"  x="360" y="758" text-anchor="middle">
-            No of providers: <tspan class="n2">8</tspan>
+            No. of providers: <tspan class="n2">8</tspan>
           </text>
 
           <rect class="box boxC" x="720" y="630" width="480" height="140"/>
           <text class="title" x="960" y="674" text-anchor="middle">CHW prov_name OR</text>
           <text class="title" x="960" y="700" text-anchor="middle">specialty = 230</text>
           <text class="mono"  x="960" y="732" text-anchor="middle">
-            No of claims: <tspan class="n1">512</tspan>
+            No. of claims: <tspan class="n1">512</tspan>
           </text>
           <text class="mono"  x="960" y="758" text-anchor="middle">
-            No of providers: <tspan class="n2">22</tspan>
+            No. of providers: <tspan class="n2">22</tspan>
           </text>
 
           <!-- Final (center bottom) - highlighted -->
@@ -442,30 +434,25 @@
           <text class="title" x="660" y="844" text-anchor="middle">Final rule</text>
           <text class="label" x="660" y="874" text-anchor="middle">(9896 AND Z) OR (CHW name / spec=230)</text>
           <text class="mono"  x="660" y="906" text-anchor="middle">
-            No of claims: <tspan class="n1">688</tspan>  •  No of providers: <tspan class="n2">33</tspan>
+            No. of claims: <tspan class="n1">688</tspan>  •  No. of providers: <tspan class="n2">33</tspan>
           </text>
           <text class="caption" x="660" y="930" text-anchor="middle">
             <tspan class="good">29 confirmed</tspan> (manual review)
           </text>
 
           <!-- Colorful arrows -->
-          <!-- Start -> three row2 boxes -->
           <path class="arrowA" d="M660 180 C660 214, 240 214, 240 240"/>
           <path class="arrowB" d="M660 180 C660 214, 660 214, 660 240"/>
           <path class="arrowA" d="M660 180 C660 214, 1080 214, 1080 240"/>
 
-          <!-- OR -> row3 boxes -->
           <path class="arrowB" d="M1080 380 C1080 412, 440 412, 440 430"/>
           <path class="arrowA" d="M1080 380 C1080 412, 880 412, 880 430"/>
 
-          <!-- Row3 -> provider signal boxes -->
           <path class="arrowC" d="M440 570 C440 606, 360 606, 360 630"/>
           <path class="arrowC" d="M880 570 C880 606, 960 606, 960 630"/>
 
-          <!-- Row3 AND -> Final -->
           <path class="arrowB" d="M440 570 C440 760, 660 760, 660 800"/>
 
-          <!-- Provider signal -> Final -->
           <path class="arrowA" d="M360 770 C360 790, 560 790, 560 800"/>
           <path class="arrowA" d="M960 770 C960 790, 760 790, 760 800"/>
         </svg>
@@ -482,8 +469,16 @@
           </a>
         </span>
       </div>
+      <p class="muted" style="margin:8px 0 0;">
+        <span class="hl red">No. of claims = 688</span>
+        <span class="hl yellow">No. of providers = 33</span>
+        <span class="hl green">29 confirmed</span>
+        &nbsp;•&nbsp;
+        <a href="https://www.hca.nm.gov/wp-content/uploads/25-10-Implementation-of-CHW-and-CHR-Updates.pdf" target="_blank" rel="noopener">
+          Letter of Direction 2025 Supplement (PDF)
+        </a>
+      </p>
     </section>
-
   </main>
 </body>
 </html>
