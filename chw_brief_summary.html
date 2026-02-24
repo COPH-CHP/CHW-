@@ -1,450 +1,489 @@
-    <!doctype html>
-    <html lang="en">
-    <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>CHW Definition — Simple PPT Style</title>
-    <style>
-        :root{
-        --turq:#007A87;
-        --cherry:#BA0C2F;
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CHW Definition — Simple PPT Style</title>
 
-        /* BRIGHTER PAGE BACKGROUND */
-        --bg:#f1fbff;
+  <style>
+    :root{
+      --turq:#007A87;
+      --cherry:#BA0C2F;
 
-        --ink:#0f172a;
-        --muted:#475569;
-        --card:#ffffff;
-        --line:#e2e8f0;
-        --shadow:0 12px 26px rgba(2,6,23,.10);
-        --radius:18px;
+      /* BRIGHTER PAGE BACKGROUND */
+      --bg:#f1fbff;
 
-        /* flow highlights */
-        --red:#dc2626;
-        --yellow:#f59e0b;
-        --green:#16a34a;
-        }
-        *{box-sizing:border-box}
-        body{
-        margin:0;
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-        color:var(--ink);
-        background:
-            radial-gradient(900px 600px at 10% 0%, rgba(0,122,135,.16), transparent 60%),
-            radial-gradient(900px 600px at 90% 10%, rgba(186,12,47,.10), transparent 58%),
-            radial-gradient(900px 600px at 50% 100%, rgba(245,158,11,.12), transparent 62%),
-            linear-gradient(180deg, #ecfeff 0%, var(--bg) 40%, #fff7ed 100%);
-        }
+      --ink:#0f172a;
+      --muted:#475569;
+      --card:#ffffff;
+      --line:#e2e8f0;
+      --shadow:0 12px 26px rgba(2,6,23,.10);
+      --radius:18px;
 
-        /* ✅ FULL-WIDTH DECK (fits entire page) */
-        .deck{
-        width: min(1600px, 100%);
-        max-width: none;
-        margin: 0 auto;
-        padding: 18px 10px 40px; /* smaller side padding */
-        }
+      /* flow highlights */
+      --red:#dc2626;
+      --yellow:#f59e0b;
+      --green:#16a34a;
+    }
 
-        /* Slide look */
-        .slide{
-        width:100%;
-        background: var(--card);
-        border:1px solid var(--line);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        padding: 22px 20px;
-        margin: 14px 0;
-        }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 600px at 10% 0%, rgba(0,122,135,.16), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(186,12,47,.10), transparent 58%),
+        radial-gradient(900px 600px at 50% 100%, rgba(245,158,11,.12), transparent 62%),
+        linear-gradient(180deg, #ecfeff 0%, var(--bg) 40%, #fff7ed 100%);
+    }
 
-        .topbar{
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:10px;
-        margin-bottom: 10px;
-        }
-        .badge{
-        display:inline-block;
-        padding: 6px 10px;
-        border-radius: 999px;
-        font-weight:700;
-        font-size: 12px;
-        background: rgba(0,122,135,.10);
-        color: var(--turq);
-        border: 1px solid rgba(0,122,135,.18);
-        }
-        .badge.red{
-        background: rgba(186,12,47,.08);
-        color: var(--cherry);
-        border: 1px solid rgba(186,12,47,.18);
-        }
+    /* ✅ FULL-WIDTH DECK (fits entire page) */
+    .deck{
+      width: 100%;
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 16px 8px 40px; /* smaller side padding */
+    }
 
-        h1,h2{margin:0}
-        h1{font-size: 22px; letter-spacing:.2px}
-        h2{font-size: 18px}
-        .muted{color:var(--muted)}
-        .big{
-        font-size: clamp(22px, 3vw, 34px);
-        font-weight: 900;
-        margin-top: 6px;
-        line-height: 1.1;
-        }
-        .kpis{
-        display:grid;
-        grid-template-columns: repeat(3, minmax(0,1fr));
-        gap: 10px;
-        margin-top: 14px;
-        }
-        @media (max-width: 820px){
-        .kpis{grid-template-columns:1fr}
-        }
-        .kpi{
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        padding: 12px 12px;
-        background: #fff;
-        }
-        .kpi .num{font-size: 26px; font-weight: 900}
-        .kpi .lbl{font-size: 12px; color: var(--muted)}
+    /* Slide look */
+    .slide{
+      width:100%;
+      background: var(--card);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 20px;
+      margin: 14px 0;
+    }
 
-        .list{
-        margin: 12px 0 0 18px;
-        color: var(--ink);
-        }
-        .list li{margin: 6px 0}
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 10px;
+    }
 
-        .formula{
-        margin-top: 12px;
-        padding: 12px 12px;
-        border-radius: 16px;
-        border: 1px solid var(--line);
-        background: linear-gradient(135deg, rgba(0,122,135,.06), rgba(186,12,47,.05));
-        font-weight: 800;
-        line-height: 1.35;
-        }
+    h1,h2{margin:0}
+    h1{font-size: 22px; letter-spacing:.2px}
+    h2{font-size: 18px}
+    .muted{color:var(--muted)}
+    .big{
+      font-size: clamp(22px, 3vw, 34px);
+      font-weight: 900;
+      margin-top: 6px;
+      line-height: 1.1;
+    }
 
-        /* Small footer */
-        .foot{
-        margin-top: 10px;
-        font-size: 12px;
-        color: var(--muted);
-        display:flex;
-        justify-content:space-between;
-        flex-wrap:wrap;
-        gap:8px;
-        }
+    .kpis{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (max-width: 820px){
+      .kpis{grid-template-columns:1fr}
+    }
+    .kpi{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 12px;
+      background: #fff;
+    }
+    .kpi .num{font-size: 26px; font-weight: 900}
+    .kpi .lbl{font-size: 12px; color: var(--muted)}
 
-        /* Optional: print nicely */
-        @media print{
-        body{background:#fff}
-        .slide{box-shadow:none; page-break-inside:avoid}
-        .deck{max-width:none; padding:0}
-        }
+    .list{
+      margin: 12px 0 0 18px;
+      color: var(--ink);
+    }
+    .list li{margin: 6px 0}
 
-        /* ===== flow chips used in slide 4 text ===== */
-        .hl{
-        display:inline-flex;
-        align-items:center;
-        gap:8px;
-        padding: 4px 10px;
-        border-radius: 999px;
-        font-weight: 950;
-        border: 1px solid rgba(2,6,23,.08);
-        margin: 2px 6px 2px 0;
-        white-space:nowrap;
-        }
-        .hl.red{background: rgba(220,38,38,.12); color: var(--red); border-color: rgba(220,38,38,.25)}
-        .hl.yellow{background: rgba(245,158,11,.18); color: #7a4a00; border-color: rgba(245,158,11,.32)}
-        .hl.green{background: rgba(22,163,74,.14); color: var(--green); border-color: rgba(22,163,74,.26)}
+    .formula{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, rgba(0,122,135,.06), rgba(186,12,47,.05));
+      font-weight: 800;
+      line-height: 1.35;
+    }
 
-        /* ✅ BIGGER FLOWCHART (fills slide) */
-        .chart{
-        width:100%;
-        height:auto;
-        display:block;
-        border-radius: 14px;
-        border: 1px solid var(--line);
-        background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
-        }
+    /* Links */
+    a{
+      color: var(--turq);
+      text-decoration: none;
+      font-weight: 800;
+    }
+    a:hover{ text-decoration: underline; }
 
-        /* ✅ Reduce padding inside slide 4 so chart fills more */
-        #slide4{
-        padding-left: 12px;
-        padding-right: 12px;
-        }
-        #slide4 .topbar{ padding-left: 8px; padding-right: 8px; }
-    </style>
-    </head>
+    /* Small footer */
+    .foot{
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      display:flex;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:8px;
+    }
 
-    <body>
-    <main class="deck">
+    /* Optional: print nicely */
+    @media print{
+      body{background:#fff}
+      .slide{box-shadow:none; page-break-inside:avoid}
+      .deck{max-width:none; padding:0}
+    }
 
-        <!-- SLIDE 1 -->
-        <section class="slide" id="slide1">
-        <div class="topbar">
-            <span class="badge">Slide 1</span>
-            <span class="badge red">2025 (Jan–Aug)</span>
+    /* ===== flow chips used in slide 4 text ===== */
+    .hl{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 950;
+      border: 1px solid rgba(2,6,23,.08);
+      margin: 2px 6px 2px 0;
+      white-space:nowrap;
+    }
+    .hl.red{background: rgba(220,38,38,.12); color: var(--red); border-color: rgba(220,38,38,.25)}
+    .hl.yellow{background: rgba(245,158,11,.18); color: #7a4a00; border-color: rgba(245,158,11,.32)}
+    .hl.green{background: rgba(22,163,74,.14); color: var(--green); border-color: rgba(22,163,74,.26)}
+
+    /* ✅ BIGGER FLOWCHART (fills slide) */
+    .chart{
+      width:100%;
+      height:auto;
+      display:block;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f7fbff 100%);
+    }
+
+    /* ✅ Reduce padding inside slide 4 so chart fills more */
+    #slide4{
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="deck">
+<header style="padding: 6px 6px 18px; text-align: center;">
+  <h1 style="margin:0; font-size: clamp(32px, 3.5vw, 48px); font-weight: 950; letter-spacing:.3px;">
+    CHW Definition
+  </h1>
+  <p style="margin:8px 0 0; color: var(--muted); font-weight: 650;">
+    Claims-based definition summary (2025 through Aug)
+  </p>
+</header>
+    <!-- SLIDE 1 -->
+    <section class="slide" id="slide1">
+      <div class="topbar"></div>
+      <h1></h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Whole claims of <b>2025</b> until <b>August</b> (this is the starting sample).
+      </p>
+      <div class="big">Whole Claims of 2025 until August</div>
+
+      <div class="foot">
+        <span></span>
+        <span class="muted"></span>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" id="slide2">
+      <div class="topbar"></div>
+
+      <h1>CHW Definition (Simple)</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Built using the <b>Letter of Direction (Aug 2025 edition)</b> and refined with input from a
+        <b>Community Health Representative</b> experienced in billing.
+        <br/>
+        Reference (must-include):
+        <a href="https://www.hca.nm.gov/wp-content/uploads/25-10-Implementation-of-CHW-and-CHR-Updates.pdf" target="_blank" rel="noopener">
+          Letter of Direction 2025 Supplement (25-10) — CHW/CHR Updates (PDF)
+        </a>
+      </p>
+
+      <ul class="list">
+        <li><b>Provider signal</b>: rendering provider specialty/type = <b>230</b> OR provider name ends with <b>“CHW”</b></li>
+
+        <!-- ✅ Added representation for 98960/98961/98962 -->
+        <li>
+          <b>Service signal</b> (98960–98962): <b>Education and Training for Patient Self-Management</b><br/>
+          <span class="muted" style="font-size:13px;">
+            (CPT 98960 / 98961 / 98962)
+          </span>
+        </li>
+
+        <li><b>Social-risk signal</b>: <b>Z-code</b> in <b>Diagnosis 1</b> or <b>Diagnosis 2</b></li>
+      </ul>
+
+      <div class="formula">
+        Rule used for the cohort:<br/>
+        ( <b>procedure codes = 9896...</b> AND <b>Z-code</b> ) OR ( <b>CHW name</b> OR <b>specialty = 230</b> )
+      </div>
+
+      <div class="kpis" aria-label="counts">
+        <div class="kpi">
+          <div class="num">688</div>
+          <div class="lbl">No of claims flagged by the rule</div>
         </div>
-        <h1>Whole Claims Dataset</h1>
-        <p class="muted" style="margin:8px 0 0;">
-            Whole claims of <b>2025</b> until <b>August</b> (this is the starting sample).
-        </p>
-        <div class="big">Whole Claims of 2025 until August</div>
-
-        <div class="foot">
-            <span>Use this as your “N0” starting point.</span>
-            <span class="muted"></span>
+        <div class="kpi">
+          <div class="num">33</div>
+          <div class="lbl">No of providers manually reviewed</div>
         </div>
-        </section>
-
-        <!-- SLIDE 2 -->
-        <section class="slide" id="slide2">
-        <div class="topbar">
-            <span class="badge">Slide 2</span>
-            <span class="badge">Definition</span>
+        <div class="kpi">
+          <div class="num">Aug 2025</div>
+          <div class="lbl">Letter of Direction edition used</div>
         </div>
+      </div>
+    </section>
 
-        <h1>CHW Definition (Simple)</h1>
-        <p class="muted" style="margin:8px 0 0;">
-            Built using the <b>Letter of Direction (Aug 2025 edition)</b> and refined with input from a
-            <b>Community Health Representative</b> experienced in billing.
-        </p>
+    <!-- SLIDE 3 -->
+    <section class="slide" id="slide3">
+      <div class="topbar"></div>
 
-        <ul class="list">
-            <li><b>Provider signal</b>: rendering provider specialty/type = <b>230</b> OR provider name ends with <b>“CHW”</b></li>
-            <li><b>Service signal</b>: procedure code in <b>98960</b>, <b>98961</b>, <b>98962</b></li>
-            <li><b>Social-risk signal</b>: <b>Z-code</b> in <b>Diagnosis 1</b> or <b>Diagnosis 2</b></li>
-        </ul>
+      <h1>Manual Review Result</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        Review summary from the 33 reviewed providers.
+      </p>
 
-        <div class="formula">
-            Rule used for the cohort:<br/>
-            ( <b>prov_cd = 9896</b> AND <b>Z-code</b> ) OR ( <b>CHW name</b> OR <b>specialty = 230</b> )
+      <div class="kpis">
+        <div class="kpi">
+          <div class="num">33</div>
+          <div class="lbl">Reviewed</div>
         </div>
-
-        <div class="kpis" aria-label="counts">
-            <div class="kpi">
-            <div class="num">688</div>
-            <div class="lbl">N1 = claims flagged by the rule</div>
-            </div>
-            <div class="kpi">
-            <div class="num">33</div>
-            <div class="lbl">N2 = providers manually reviewed</div>
-            </div>
-            <div class="kpi">
-            <div class="num">Aug 2025</div>
-            <div class="lbl">Letter of Direction edition used</div>
-            </div>
+        <div class="kpi">
+          <div class="num">4</div>
+          <div class="lbl">Doubtful</div>
         </div>
-        </section>
-
-        <!-- SLIDE 3 -->
-        <section class="slide" id="slide3">
-        <div class="topbar">
-            <span class="badge">Slide 3</span>
-            <span class="badge">Validation</span>
+        <div class="kpi">
+          <div class="num">29</div>
+          <div class="lbl">Confirmed CHW</div>
         </div>
+      </div>
 
-        <h1>Manual Review Result</h1>
-        <p class="muted" style="margin:8px 0 0;">
-            Review summary from the 33 reviewed providers.
-        </p>
+      <div class="formula" style="margin-top:14px;">
+        Conclusion: <b>29</b> confirmed CHW (from reviewed sample).
+      </div>
+    </section>
 
-        <div class="kpis">
-            <div class="kpi">
-            <div class="num">33</div>
-            <div class="lbl">Reviewed</div>
-            </div>
-            <div class="kpi">
-            <div class="num">4</div>
-            <div class="lbl">Doubtful</div>
-            </div>
-            <div class="kpi">
-            <div class="num">29</div>
-            <div class="lbl">Confirmed CHW</div>
-            </div>
-        </div>
+    <!-- SLIDE 4: FLOWCHART (FULL-WIDTH FIT) -->
+    <section class="slide" id="slide4">
+      <div class="topbar"></div>
 
-        <div class="formula" style="margin-top:14px;">
-            Conclusion: <b>29</b> confirmed CHW (from reviewed sample).
-        </div>
-        </section>
+      <h1>Flowchart (Full View)</h1>
+      <p class="muted" style="margin:8px 0 0;">
+        <span class="hl red">No of claims = 688</span>
+        <span class="hl yellow">No of providers = 33</span>
+        <span class="hl green">29 confirmed</span>
+        &nbsp;•&nbsp;
+        <a href="https://www.hca.nm.gov/wp-content/uploads/25-10-Implementation-of-CHW-and-CHR-Updates.pdf" target="_blank" rel="noopener">
+          Letter of Direction 2025 Supplement (PDF)
+        </a>
+      </p>
 
-        <!-- SLIDE 4: FLOWCHART (FULL-WIDTH FIT) -->
-        <section class="slide" id="slide4">
-        <div class="topbar">
-            <span class="badge">Slide 4</span>
-            <span class="badge">Flowchart</span>
-        </div>
+      <div style="margin-top:12px;">
+        <svg class="chart" id="flowSvg" xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 1320 960" preserveAspectRatio="xMidYMid meet" role="img"
+             aria-label="CHW Flowchart (No Taxonomy)">
+          <defs>
+            <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="rgba(0,0,0,.22)"/>
+            </filter>
 
-        <h1>Flowchart (Full View)</h1>
-        <p class="muted" style="margin:8px 0 0;">
-            
-        
-            <span class="hl red">N1=688 (claims/TCNs)</span>
-            <span class="hl yellow">N2=33 (providers)</span>
-            <span class="hl green">29 confirmed</span>
-        </p>
+            <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="6" result="blur"/>
+              <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
 
-        <div style="margin-top:12px;">
-            <svg class="chart" id="flowSvg" xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 1200 860" preserveAspectRatio="xMidYMid meet" role="img"
-                aria-label="CHW Flowchart (No Taxonomy)">
-            <defs>
-                <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="rgba(0,0,0,.22)"/>
-                </filter>
+            <!-- Gradient arrow strokes -->
+            <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#06b6d4"/>
+              <stop offset="1" stop-color="#8b5cf6"/>
+            </linearGradient>
+            <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f97316"/>
+              <stop offset="1" stop-color="#ef4444"/>
+            </linearGradient>
+            <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#22c55e"/>
+              <stop offset="1" stop-color="#06b6d4"/>
+            </linearGradient>
 
-                <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-                <feGaussianBlur stdDeviation="6" result="blur"/>
-                <feMerge>
-                    <feMergeNode in="blur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-                </filter>
+            <marker id="arrowHeadA" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 Z" fill="url(#gA)"/>
+            </marker>
+            <marker id="arrowHeadB" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 Z" fill="url(#gB)"/>
+            </marker>
+            <marker id="arrowHeadC" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M0,0 L12,6 L0,12 Z" fill="url(#gC)"/>
+            </marker>
 
-                <!-- Gradient arrow heads -->
-                <linearGradient id="gA" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#06b6d4"/>
-                <stop offset="1" stop-color="#8b5cf6"/>
-                </linearGradient>
-                <linearGradient id="gB" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#f97316"/>
-                <stop offset="1" stop-color="#ef4444"/>
-                </linearGradient>
-                <linearGradient id="gC" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#22c55e"/>
-                <stop offset="1" stop-color="#06b6d4"/>
-                </linearGradient>
+            <style>
+              /* Boxes */
+              .box{ fill:#ffffff; stroke: rgba(15,23,42,.12); stroke-width:2; rx:22; filter:url(#softShadow); }
+              .boxT{ stroke: rgba(0,122,135,.65); }
+              .boxG{ stroke: rgba(245,158,11,.55); }
+              .boxC{ stroke: rgba(186,12,47,.55); }
 
-                <marker id="arrowHeadA" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-                <path d="M0,0 L12,6 L0,12 Z" fill="url(#gA)"/>
-                </marker>
-                <marker id="arrowHeadB" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-                <path d="M0,0 L12,6 L0,12 Z" fill="url(#gB)"/>
-                </marker>
-                <marker id="arrowHeadC" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-                <path d="M0,0 L12,6 L0,12 Z" fill="url(#gC)"/>
-                </marker>
+              /* FINAL box highlighted */
+              .finalBox{
+                stroke: rgba(22,163,74,.75);
+                stroke-width: 5;
+                fill: rgba(22,163,74,.12);
+                filter:url(#glow);
+              }
 
-                <style>
-                /* Boxes */
-                .box{ fill:#ffffff; stroke: rgba(15,23,42,.12); stroke-width:2; rx:18; filter:url(#softShadow); }
-                .boxT{ stroke: rgba(0,122,135,.65); }
-                .boxG{ stroke: rgba(245,158,11,.55); }
-                .boxC{ stroke: rgba(186,12,47,.55); }
+              /* Text */
+              .title{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:19px; fill: rgba(15,23,42,.92); font-weight:900; }
+              .label{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:14px; fill: rgba(71,85,105,.95); font-weight:800; }
+              .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"; font-size:14px; fill: rgba(15,23,42,.92); font-weight:950; }
+              .caption{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12.5px; fill: rgba(71,85,105,.95); font-weight:900; }
 
-                /* FINAL box highlighted */
-                .finalBox{
-                    stroke: rgba(22,163,74,.70);
-                    stroke-width: 4;
-                    fill: rgba(22,163,74,.10);
-                    filter:url(#glow);
-                }
+              /* Number emphasis */
+              .n1{ fill:#dc2626; font-weight: 950; }   /* red: claims */
+              .n2{ fill:#b45309; font-weight: 950; }   /* yellow-ish: providers */
+              .good{ fill:#16a34a; font-weight: 950; } /* green: confirmed */
 
-                /* Text */
-                .title{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:18px; fill: rgba(15,23,42,.92); font-weight:900; }
-                .label{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:13px; fill: rgba(71,85,105,.95); font-weight:700; }
-                .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New"; font-size:13px; fill: rgba(15,23,42,.92); font-weight:900; }
-                .caption{ font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; font-size:12px; fill: rgba(71,85,105,.95); font-weight:800; }
+              /* Colorful arrows */
+              .arrowA{ stroke:url(#gA); stroke-width:5; fill:none; marker-end:url(#arrowHeadA); }
+              .arrowB{ stroke:url(#gB); stroke-width:5; fill:none; marker-end:url(#arrowHeadB); }
+              .arrowC{ stroke:url(#gC); stroke-width:5; fill:none; marker-end:url(#arrowHeadC); }
+            </style>
+          </defs>
 
-                /* Number emphasis */
-                .n1{ fill:#dc2626; font-weight: 950; }   /* red: claims */
-                .n2{ fill:#b45309; font-weight: 950; }   /* yellow-ish: providers */
-                .good{ fill:#16a34a; font-weight: 950; } /* green: confirmed */
+          <!-- Row 1 (center) -->
+          <rect class="box boxG" x="480" y="40" width="360" height="140"/>
+          <text class="title" x="660" y="82" text-anchor="middle">Whole claims</text>
+          <text class="label" x="660" y="112" text-anchor="middle">Universe: 2025 through Aug</text>
+          <text class="caption" x="660" y="136" text-anchor="middle">Start here</text>
 
-                /* Colorful arrows */
-                .arrowA{ stroke:url(#gA); stroke-width:4; fill:none; marker-end:url(#arrowHeadA); }
-                .arrowB{ stroke:url(#gB); stroke-width:4; fill:none; marker-end:url(#arrowHeadB); }
-                .arrowC{ stroke:url(#gC); stroke-width:4; fill:none; marker-end:url(#arrowHeadC); }
-                </style>
-            </defs>
+          <!-- Row 2 (3 boxes) -->
+          <rect class="box boxT" x="60"  y="240" width="360" height="140"/>
+          <text class="title" x="240" y="284" text-anchor="middle">9896 codes</text>
+          <text class="mono"  x="240" y="318" text-anchor="middle">
+            No of claims: <tspan class="n1">1056</tspan>
+          </text>
+          <text class="mono"  x="240" y="346" text-anchor="middle">
+            No of providers: <tspan class="n2">48</tspan>
+          </text>
 
-            <!-- Row 1 (center) -->
-            <rect class="box boxG" x="450" y="40" width="300" height="120"/>
-            <text class="title" x="600" y="78" text-anchor="middle">Whole claims</text>
-            <text class="label" x="600" y="104" text-anchor="middle">Universe: 2025 through Aug</text>
-            <text class="caption" x="600" y="128" text-anchor="middle">Start here</text>
+          <rect class="box boxG" x="480" y="240" width="360" height="140"/>
+          <text class="title" x="660" y="284" text-anchor="middle">Z-codes</text>
+          <text class="mono"  x="660" y="318" text-anchor="middle">
+            No of claims: <tspan class="n1">26649</tspan>
+          </text>
+          <text class="mono"  x="660" y="346" text-anchor="middle">
+            No of providers: <tspan class="n2">796</tspan>
+          </text>
 
-            <!-- Row 2 (3 boxes) -->
-            <rect class="box boxT" x="80"  y="220" width="300" height="120"/>
-            <text class="title" x="230" y="258" text-anchor="middle">9896 codes</text>
-            <text class="mono"  x="230" y="288" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">1056</tspan>, <tspan class="n2">48</tspan>)
-            </text>
+          <rect class="box boxG" x="900" y="240" width="360" height="140"/>
+          <text class="title" x="1080" y="284" text-anchor="middle">9896 OR Z-codes</text>
+          <text class="mono"  x="1080" y="318" text-anchor="middle">
+            No of claims: <tspan class="n1">27392</tspan>
+          </text>
+          <text class="mono"  x="1080" y="346" text-anchor="middle">
+            No of providers: <tspan class="n2">815</tspan>
+          </text>
 
-            <rect class="box boxG" x="450" y="220" width="300" height="120"/>
-            <text class="title" x="600" y="258" text-anchor="middle">Z-codes</text>
-            <text class="mono"  x="600" y="288" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">26649</tspan>, <tspan class="n2">796</tspan>)
-            </text>
+          <!-- Row 3 (2 boxes) -->
+          <rect class="box boxG" x="260" y="430" width="360" height="140"/>
+          <text class="title" x="440" y="474" text-anchor="middle">9896 AND Z-codes</text>
+          <text class="mono"  x="440" y="508" text-anchor="middle">
+            No of claims: <tspan class="n1">313</tspan>
+          </text>
+          <text class="mono"  x="440" y="536" text-anchor="middle">
+            No of providers: <tspan class="n2">22</tspan>
+          </text>
 
-            <rect class="box boxG" x="820" y="220" width="300" height="120"/>
-            <text class="title" x="970" y="258" text-anchor="middle">9896 OR Z-codes</text>
-            <text class="mono"  x="970" y="288" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">27392</tspan>, <tspan class="n2">815</tspan>)
-            </text>
+          <rect class="box" x="700" y="430" width="360" height="140"/>
+          <text class="title" x="880" y="474" text-anchor="middle">Others</text>
+          <text class="mono"  x="880" y="508" text-anchor="middle">
+            No of claims: <tspan class="n1">27092</tspan>
+          </text>
+          <text class="mono"  x="880" y="536" text-anchor="middle">
+            No of providers: <tspan class="n2">808</tspan>
+          </text>
 
-            <!-- Row 3 (2 boxes) -->
-            <rect class="box boxG" x="300" y="400" width="300" height="120"/>
-            <text class="title" x="450" y="438" text-anchor="middle">9896 AND Z-codes</text>
-            <text class="mono"  x="450" y="468" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">313</tspan>, <tspan class="n2">22</tspan>)
-            </text>
+          <!-- Row 4 (provider signal boxes) -->
+          <rect class="box boxC" x="120" y="630" width="480" height="140"/>
+          <text class="title" x="360" y="674" text-anchor="middle">CHW prov_name OR</text>
+          <text class="title" x="360" y="700" text-anchor="middle">specialty = 230</text>
+          <text class="mono"  x="360" y="732" text-anchor="middle">
+            No of claims: <tspan class="n1">76</tspan>
+          </text>
+          <text class="mono"  x="360" y="758" text-anchor="middle">
+            No of providers: <tspan class="n2">8</tspan>
+          </text>
 
-            <rect class="box" x="630" y="400" width="300" height="120"/>
-            <text class="title" x="780" y="438" text-anchor="middle">Others</text>
-            <text class="mono"  x="780" y="468" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">27092</tspan>, <tspan class="n2">808</tspan>)
-            </text>
+          <rect class="box boxC" x="720" y="630" width="480" height="140"/>
+          <text class="title" x="960" y="674" text-anchor="middle">CHW prov_name OR</text>
+          <text class="title" x="960" y="700" text-anchor="middle">specialty = 230</text>
+          <text class="mono"  x="960" y="732" text-anchor="middle">
+            No of claims: <tspan class="n1">512</tspan>
+          </text>
+          <text class="mono"  x="960" y="758" text-anchor="middle">
+            No of providers: <tspan class="n2">22</tspan>
+          </text>
 
-            <!-- Row 4 (provider signal boxes) -->
-            <rect class="box boxC" x="140" y="580" width="360" height="120"/>
-            <text class="title" x="320" y="618" text-anchor="middle">CHW prov_name OR</text>
-            <text class="title" x="320" y="640" text-anchor="middle">specialty = 230</text>
-            <text class="mono"  x="320" y="672" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">76</tspan>, <tspan class="n2">8</tspan>)
-            </text>
+          <!-- Final (center bottom) - highlighted -->
+          <rect class="box finalBox" x="480" y="800" width="360" height="140"/>
+          <text class="title" x="660" y="844" text-anchor="middle">Final rule</text>
+          <text class="label" x="660" y="874" text-anchor="middle">(9896 AND Z) OR (CHW name / spec=230)</text>
+          <text class="mono"  x="660" y="906" text-anchor="middle">
+            No of claims: <tspan class="n1">688</tspan>  •  No of providers: <tspan class="n2">33</tspan>
+          </text>
+          <text class="caption" x="660" y="930" text-anchor="middle">
+            <tspan class="good">29 confirmed</tspan> (manual review)
+          </text>
 
-            <rect class="box boxC" x="700" y="580" width="360" height="120"/>
-            <text class="title" x="880" y="618" text-anchor="middle">CHW prov_name OR</text>
-            <text class="title" x="880" y="640" text-anchor="middle">specialty = 230</text>
-            <text class="mono"  x="880" y="672" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">512</tspan>, <tspan class="n2">22</tspan>)
-            </text>
+          <!-- Colorful arrows -->
+          <!-- Start -> three row2 boxes -->
+          <path class="arrowA" d="M660 180 C660 214, 240 214, 240 240"/>
+          <path class="arrowB" d="M660 180 C660 214, 660 214, 660 240"/>
+          <path class="arrowA" d="M660 180 C660 214, 1080 214, 1080 240"/>
 
-            <!-- Final (center bottom) - highlighted -->
-            <rect class="box finalBox" x="450" y="720" width="300" height="120"/>
-            <text class="title" x="600" y="756" text-anchor="middle">Final rule</text>
-            <text class="label" x="600" y="784" text-anchor="middle">(9896 AND Z) OR (CHW name / spec=230)</text>
-            <text class="mono"  x="600" y="814" text-anchor="middle">
-                N1,N2 = (<tspan class="n1">688</tspan>, <tspan class="n2">33</tspan>)
-            </text>
-            <text class="caption" x="600" y="836" text-anchor="middle">
-                <tspan class="good">29 confirmed</tspan> (manual review)
-            </text>
+          <!-- OR -> row3 boxes -->
+          <path class="arrowB" d="M1080 380 C1080 412, 440 412, 440 430"/>
+          <path class="arrowA" d="M1080 380 C1080 412, 880 412, 880 430"/>
 
-            <!-- Colorful arrows -->
-            <path class="arrowA" d="M600 160 C600 190, 230 190, 230 220"/>
-            <path class="arrowB" d="M600 160 C600 190, 600 190, 600 220"/>
-            <path class="arrowA" d="M600 160 C600 190, 970 190, 970 220"/>
+          <!-- Row3 -> provider signal boxes -->
+          <path class="arrowC" d="M440 570 C440 606, 360 606, 360 630"/>
+          <path class="arrowC" d="M880 570 C880 606, 960 606, 960 630"/>
 
-            <path class="arrowB" d="M970 340 C970 370, 450 370, 450 400"/>
-            <path class="arrowA" d="M970 340 C970 370, 780 370, 780 400"/>
+          <!-- Row3 AND -> Final -->
+          <path class="arrowB" d="M440 570 C440 760, 660 760, 660 800"/>
 
-            <path class="arrowC" d="M450 520 C450 555, 320 555, 320 580"/>
-            <path class="arrowC" d="M780 520 C780 555, 880 555, 880 580"/>
+          <!-- Provider signal -> Final -->
+          <path class="arrowA" d="M360 770 C360 790, 560 790, 560 800"/>
+          <path class="arrowA" d="M960 770 C960 790, 760 790, 760 800"/>
+        </svg>
+      </div>
 
-            <path class="arrowB" d="M450 520 C450 690, 600 690, 600 720"/>
-            <path class="arrowA" d="M320 700 C320 710, 520 710, 520 720"/>
-            <path class="arrowA" d="M880 700 C880 710, 680 710, 680 720"/>
-            </svg>
-        </div>
+      <div class="foot">
+        <span>
+          Aligned with Letter of Direction (Aug 2025 edition) + billing-experienced CHR feedback.
+        </span>
+        <span>
+          Reference:
+          <a href="https://www.hca.nm.gov/wp-content/uploads/25-10-Implementation-of-CHW-and-CHR-Updates.pdf" target="_blank" rel="noopener">
+            LOD 2025 Supplement (PDF)
+          </a>
+        </span>
+      </div>
+    </section>
 
-        <div class="foot">
-            <span>Aligned with Letter of Direction (Aug 2025 edition) + billing-experienced CHR feedback.</span>
-            <span>Deck now uses wider max width and smaller margins.</span>
-        </div>
-        </section>
-
-    </main>
-    </body>
-    </html> 
+  </main>
+</body>
+</html>
