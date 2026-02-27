@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Why We Need Cloud — SAS Automation (Single Slide)</title>
+
+  <style>
+    :root{
+      /* Light but NOT white slide background */
+      --bg:#f1f5ff;                 /* soft periwinkle */
+      --ink:#0f172a;
+      --muted:#475569;
+      --line: rgba(15,23,42,.10);
+
+      --accent:#0ea5e9;             /* sky */
+      --accent2:#14b8a6;            /* teal */
+      --accent3:#a855f7;            /* purple */
+
+      --warn:#f97316;               /* orange */
+      --bad:#ef4444;                /* red */
+      --good:#16a34a;               /* green */
+
+      --gold:#f59e0b;               /* PURPOSE highlight */
+      --goldSoft: rgba(245,158,11,.16);
+
+      --shadow: 0 18px 45px rgba(2, 6, 23, 0.12);
+      --shadow2: 0 10px 30px rgba(2, 6, 23, 0.10);
+      --r: 22px;
+
+      /* Large, presentation-like text */
+      --h1: 44px;
+      --h2: 26px;
+      --p: 20px;
+      --small: 16px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 520px at 12% 12%, rgba(20,184,166,.22), transparent 60%),
+        radial-gradient(900px 520px at 90% 18%, rgba(14,165,233,.22), transparent 60%),
+        radial-gradient(900px 520px at 55% 92%, rgba(168,85,247,.18), transparent 60%),
+        linear-gradient(180deg, #eef6ff, #f6fbff);
+      overflow-x:hidden;
+    }
+
+    /* Floating cloud clip-art layer */
+    .cloudLayer{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.60;
+      z-index:0;
+      filter: drop-shadow(0 18px 28px rgba(2,6,23,.12));
+    }
+    .cloud{
+      position:absolute;
+      width: 260px;
+      animation: drift linear infinite;
+      opacity:.85;
+    }
+    .cloud.c1{left:-260px; top: 90px; animation-duration: 38s;}
+    .cloud.c2{left:-320px; top: 280px; animation-duration: 52s; opacity:.55; transform: scale(.85);}
+    .cloud.c3{left:-280px; top: 520px; animation-duration: 44s; opacity:.42; transform: scale(.75);}
+    @keyframes drift{
+      from{transform: translateX(-80px) scale(var(--s,1));}
+      to{transform: translateX(calc(100vw + 520px)) scale(var(--s,1));}
+    }
+
+    .wrap{
+      width:100%;
+      min-height:100vh;
+      padding: 26px 26px 34px;
+      position:relative;
+      z-index:1;
+    }
+
+    /* Top ribbon */
+    .ribbon{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      background: rgba(234, 242, 255, .72);
+      backdrop-filter: blur(10px);
+      border-radius: var(--r);
+      box-shadow: var(--shadow2);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+      animation: floatIn .6s ease both;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap: 14px;
+      min-width: 280px;
+    }
+
+    .badge{
+      width: 46px; height: 46px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(14,165,233,.28), rgba(20,184,166,.24));
+      border: 1px solid rgba(15,23,42,.10);
+      display:grid; place-items:center;
+      box-shadow: 0 14px 28px rgba(14,165,233,.12);
+      overflow:hidden;
+    }
+
+    .titlewrap{line-height:1.06}
+    .titlewrap b{font-size: 18px; letter-spacing:.25px}
+    .titlewrap span{display:block; color: var(--muted); font-size: var(--small); margin-top:4px}
+
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{
+      appearance:none;
+      border:1px solid rgba(15,23,42,.10);
+      background: rgba(255,255,255,.55);
+      color: var(--ink);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(2,6,23,.05);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
+      display:inline-flex; align-items:center; gap:10px;
+      font-size: 16px;
+      user-select:none;
+      backdrop-filter: blur(8px);
+    }
+    .btn:hover{
+      border-color: rgba(14,165,233,.35);
+      box-shadow: 0 14px 26px rgba(2,6,23,.08);
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.70);
+    }
+    .btn:active{transform: translateY(0px)}
+    .btn.primary{
+      border-color: rgba(14,165,233,.35);
+      background: linear-gradient(135deg, rgba(14,165,233,.16), rgba(20,184,166,.14));
+    }
+
+    /* Main slide (NOT white) */
+    .slide{
+      margin-top: 18px;
+      border: 1px solid rgba(15,23,42,.10);
+      background:
+        radial-gradient(900px 500px at 16% 20%, rgba(14,165,233,.10), transparent 55%),
+        radial-gradient(900px 500px at 90% 10%, rgba(168,85,247,.10), transparent 60%),
+        radial-gradient(900px 500px at 70% 92%, rgba(20,184,166,.10), transparent 60%),
+        linear-gradient(180deg, rgba(234,242,255,.88), rgba(239,247,255,.92));
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px 28px 26px;
+      width: 100%;
+      overflow:hidden;
+      position:relative;
+      animation: floatIn .7s ease .05s both;
+    }
+
+    .corner{
+      position:absolute;
+      width: 520px; height: 520px;
+      right: -200px; top: -260px;
+      background: radial-gradient(circle at 30% 30%, rgba(14,165,233,.25), transparent 60%),
+                  radial-gradient(circle at 70% 70%, rgba(20,184,166,.22), transparent 60%),
+                  radial-gradient(circle at 30% 80%, rgba(168,85,247,.18), transparent 60%);
+      filter: blur(2px);
+      transform: rotate(18deg);
+      pointer-events:none;
+    }
+
+    h1{
+      font-size: var(--h1);
+      margin: 0 0 12px 0;
+      letter-spacing: .2px;
+    }
+
+    .lede{
+      margin: 0;
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 105ch;
+    }
+
+    .grid{
+      margin-top: 22px;
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 18px;
+      align-items:start;
+    }
+
+    /* Cards: colorful backgrounds (no pure white) */
+    .card{
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 14px 30px rgba(2,6,23,.06);
+      position:relative;
+      overflow:hidden;
+      animation: rise .55s ease both;
+      backdrop-filter: blur(10px);
+      cursor: pointer;             /* click-to-hide/show */
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .card:hover{ transform: translateY(-1px); box-shadow: 0 18px 36px rgba(2,6,23,.08); }
+
+    .card.theme-gold{
+      background:
+        radial-gradient(600px 240px at 18% 18%, rgba(245,158,11,.22), transparent 58%),
+        radial-gradient(520px 240px at 88% 8%, rgba(14,165,233,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.60));
+      border-color: rgba(245,158,11,.24);
+    }
+    .card.theme-purple{
+      background:
+        radial-gradient(520px 220px at 20% 20%, rgba(168,85,247,.22), transparent 58%),
+        radial-gradient(520px 220px at 90% 10%, rgba(14,165,233,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.60));
+      border-color: rgba(168,85,247,.22);
+    }
+    .card.theme-warn{
+      background:
+        radial-gradient(520px 220px at 20% 20%, rgba(249,115,22,.20), transparent 60%),
+        radial-gradient(520px 220px at 92% 10%, rgba(239,68,68,.12), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.60));
+      border-color: rgba(249,115,22,.20);
+    }
+    .card.theme-teal{
+      background:
+        radial-gradient(520px 220px at 18% 18%, rgba(20,184,166,.22), transparent 58%),
+        radial-gradient(520px 220px at 90% 10%, rgba(14,165,233,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.60));
+      border-color: rgba(20,184,166,.20);
+    }
+    .card.theme-sec{
+      background:
+        radial-gradient(520px 220px at 18% 18%, rgba(14,165,233,.16), transparent 58%),
+        radial-gradient(520px 220px at 88% 8%, rgba(22,163,74,.14), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.78), rgba(255,255,255,.60));
+      border-color: rgba(14,165,233,.18);
+    }
+
+    .cardHead{
+      display:flex; align-items:center; justify-content:space-between; gap: 12px;
+      margin-bottom: 10px;
+    }
+    .cardHead h2{
+      font-size: var(--h2);
+      margin:0;
+      display:flex; align-items:center; gap: 10px;
+      letter-spacing:.2px;
+    }
+
+    .pill{
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(241,245,249,.65);
+      color: var(--muted);
+      white-space: nowrap;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Left highlight bar variants */
+    .highlightBar{
+      position:absolute; inset: 0 auto 0 0;
+      width: 10px;
+      background: linear-gradient(180deg, rgba(14,165,233,.95), rgba(20,184,166,.90));
+    }
+    .highlightBar.warn{
+      background: linear-gradient(180deg, rgba(249,115,22,.95), rgba(239,68,68,.90));
+    }
+    .highlightBar.purple{
+      background: linear-gradient(180deg, rgba(168,85,247,.95), rgba(14,165,233,.90));
+    }
+    .highlightBar.gold{
+      background: linear-gradient(180deg, rgba(245,158,11,.98), rgba(251,191,36,.92));
+    }
+    .highlightBar.sec{
+      background: linear-gradient(180deg, rgba(22,163,74,.92), rgba(14,165,233,.88));
+    }
+
+    .purposeLabel{
+      border-color: rgba(245,158,11,.30) !important;
+      background: var(--goldSoft) !important;
+      color: rgba(120,53,15,.95) !important;
+      font-weight: 900;
+    }
+
+    .text{
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .bullets{
+      margin: 12px 0 0;
+      padding-left: 22px;
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .bullets li{margin: 8px 0}
+    .key{color: var(--ink); font-weight: 900;}
+
+    .iconChip{
+      width: 46px; height: 46px;
+      border-radius: 18px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: linear-gradient(135deg, rgba(14,165,233,.14), rgba(20,184,166,.12));
+      display:grid; place-items:center;
+      box-shadow: 0 10px 20px rgba(2,6,23,.06);
+      flex: 0 0 auto;
+      transition: transform .15s ease;
+      backdrop-filter: blur(8px);
+    }
+    .card:hover .iconChip{transform: rotate(-2deg) scale(1.02)}
+
+    .chips{display:flex; flex-wrap:wrap; gap:10px; margin-top: 14px}
+    .chip{
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      padding: 8px 12px;
+      font-size: 16px;
+      background: rgba(255,255,255,.55);
+      display:flex; align-items:center; gap:8px;
+      box-shadow: 0 10px 18px rgba(2,6,23,.05);
+      backdrop-filter: blur(8px);
+    }
+    .chip.good{border-color: rgba(22,163,74,.22); background: rgba(22,163,74,.08)}
+    .chip.bad{border-color: rgba(239,68,68,.22); background: rgba(239,68,68,.08)}
+    .chip.warn{border-color: rgba(249,115,22,.22); background: rgba(249,115,22,.08)}
+    .dot{width:10px; height:10px; border-radius: 999px; background: var(--muted);}
+    .chip.good .dot{background: var(--good)}
+    .chip.bad .dot{background: var(--bad)}
+    .chip.warn .dot{background: var(--warn)}
+
+    /* Hide/show behavior (blank state) */
+    .hideable .content{ transition: opacity .18s ease; }
+    .hideable.isHidden .content{ opacity:0; pointer-events:none; }
+    .hideable.isHidden{
+      /* keep card height stable, show “blank” look */
+    }
+    .blankOverlay{
+      position:absolute; inset:0;
+      display:none;
+      place-items:center;
+      padding: 18px;
+      text-align:center;
+      color: rgba(71,85,105,.70);
+      font-weight: 900;
+      letter-spacing:.2px;
+      font-size: 22px;
+    }
+    .hideable.isHidden .blankOverlay{ display:grid; }
+
+    /* Flip to blank (kept for the advantages block) */
+    .flip{
+      border-radius: 22px;
+      border: 1px solid rgba(15,23,42,.10);
+      box-shadow: 0 14px 30px rgba(2,6,23,.06);
+      overflow:hidden;
+      position:relative;
+      backdrop-filter: blur(10px);
+      cursor:pointer;
+      user-select:none;
+      min-height: 330px;
+      animation: rise .55s ease both;
+    }
+    .flipHint{
+      position:absolute;
+      right: 14px; top: 14px;
+      font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(15,23,42,.10);
+      background: rgba(241,245,249,.60);
+      color: var(--muted);
+      backdrop-filter: blur(8px);
+      z-index: 3;
+    }
+    .flipInner{
+      position:absolute; inset:0;
+      transform-style: preserve-3d;
+      transition: transform .60s cubic-bezier(.2,.8,.2,1);
+    }
+    .flip.isFlipped .flipInner{transform: rotateY(180deg)}
+    .face{
+      position:absolute; inset:0;
+      backface-visibility: hidden;
+      padding: 18px;
+    }
+    .back{
+      transform: rotateY(180deg);
+      display:grid;
+      place-items:center;
+      padding: 18px;
+      background:
+        radial-gradient(520px 240px at 18% 18%, rgba(249,115,22,.14), transparent 62%),
+        radial-gradient(520px 240px at 88% 10%, rgba(239,68,68,.10), transparent 62%),
+        linear-gradient(180deg, rgba(255,255,255,.70), rgba(255,255,255,.52));
+    }
+
+    /* Footer */
+    .footer{
+      margin-top: 18px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 14px;
+      border-top: 1px solid rgba(15,23,42,.10);
+      color: var(--muted);
+      font-size: var(--small);
+    }
+    .kbd{
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border: 1px solid rgba(15,23,42,.10);
+      border-radius: 10px;
+      background: rgba(241,245,249,.70);
+      color: var(--muted);
+      font-size: 14px;
+      backdrop-filter: blur(8px);
+    }
+
+    /* Animations */
+    @keyframes floatIn{
+      from{opacity:0; transform: translateY(10px)}
+      to{opacity:1; transform: translateY(0)}
+    }
+    @keyframes rise{
+      from{opacity:0; transform: translateY(12px)}
+      to{opacity:1; transform: translateY(0)}
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      .grid{grid-template-columns: 1fr; }
+      h1{font-size: 38px}
+      :root{ --p: 19px; }
+      .flip{min-height: 360px;}
+    }
+    @media (max-width: 720px){
+      .wrap{padding: 16px}
+      .slide{padding: 18px}
+      .ribbon{position:static}
+      body{overflow:auto}
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Floating cloud clip-arts -->
+  <div class="cloudLayer" aria-hidden="true">
+    <svg class="cloud c1" viewBox="0 0 260 140">
+      <defs>
+        <linearGradient id="cgrad1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(14,165,233,.22)"/>
+          <stop offset="1" stop-color="rgba(20,184,166,.18)"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <path d="M72 106h120c18 0 32-12 32-28 0-15-11-26-26-28-6-20-25-34-48-34-19 0-35 10-44 25-3-1-7-2-11-2-16 0-29 12-30 27C26 67 14 79 14 95c0 18 14 31 32 31z"
+              fill="url(#cgrad1)" stroke="rgba(15,23,42,.10)" stroke-width="2"/>
+        <path d="M62 94c8-18 27-30 49-30 24 0 45 15 51 36" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </svg>
+
+    <svg class="cloud c2" viewBox="0 0 260 140">
+      <defs>
+        <linearGradient id="cgrad2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(168,85,247,.18)"/>
+          <stop offset="1" stop-color="rgba(14,165,233,.14)"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <path d="M72 106h120c18 0 32-12 32-28 0-15-11-26-26-28-6-20-25-34-48-34-19 0-35 10-44 25-3-1-7-2-11-2-16 0-29 12-30 27C26 67 14 79 14 95c0 18 14 31 32 31z"
+              fill="url(#cgrad2)" stroke="rgba(15,23,42,.08)" stroke-width="2"/>
+        <circle cx="90" cy="54" r="5" fill="rgba(255,255,255,.55)"/>
+        <circle cx="110" cy="44" r="3" fill="rgba(255,255,255,.45)"/>
+      </g>
+    </svg>
+
+    <svg class="cloud c3" viewBox="0 0 260 140">
+      <defs>
+        <linearGradient id="cgrad3" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="rgba(20,184,166,.16)"/>
+          <stop offset="1" stop-color="rgba(14,165,233,.12)"/>
+        </linearGradient>
+      </defs>
+      <g>
+        <path d="M72 106h120c18 0 32-12 32-28 0-15-11-26-26-28-6-20-25-34-48-34-19 0-35 10-44 25-3-1-7-2-11-2-16 0-29 12-30 27C26 67 14 79 14 95c0 18 14 31 32 31z"
+              fill="url(#cgrad3)" stroke="rgba(15,23,42,.06)" stroke-width="2"/>
+        <path d="M40 98h172" stroke="rgba(255,255,255,.28)" stroke-width="4" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <!-- Ribbon -->
+    <div class="ribbon">
+      <div class="brand">
+        <div class="badge" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <path d="M7.5 18h10.3a3.7 3.7 0 0 0 .6-7.35A5.2 5.2 0 0 0 8.2 8.7 3.6 3.6 0 0 0 7.5 18Z"
+                  stroke="rgba(15,23,42,.85)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M8.5 18v-1.2" stroke="rgba(14,165,233,.85)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 18v-2.2" stroke="rgba(20,184,166,.85)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M15.5 18v-1.6" stroke="rgba(168,85,247,.75)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="titlewrap">
+          <b>Cloud vs N-Drive — Decision Slide</b>
+          <span>Click to hide/show on every block + flip-to-blank advantage card</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="pulseBtn" title="Highlight key sections">✨ Highlight</button>
+        <button class="btn" id="scrollBtn" title="Jump to bottom">⬇ Jump <span class="kbd">J</span></button>
+      </div>
+    </div>
+
+    <!-- Single “slide” -->
+    <section class="slide" id="slide">
+      <div class="corner" aria-hidden="true"></div>
+
+      <h1>We Need Cloud for Scalable Medicaid Analytics & Automation</h1>
+      <p class="lede">
+        Our pipeline must handle <span class="key">data growth</span>, <span class="key">cross-table joins</span>, and
+        <span class="key">multi-user access</span>. Even with ~<span class="key">100 GB</span> today (local <span class="key">64 GB RAM</span>),
+        cloud is the correct foundation for reliable performance, repeatable automation, and future expansion.
+      </p>
+
+      <div class="grid">
+        <!-- PURPOSE (click hide/show) -->
+        <div class="card theme-gold hideable" id="purposeCard" data-hideable>
+          <div class="highlightBar gold"></div>
+
+          <div class="blankOverlay">Hidden (click to show)</div>
+
+          <div class="content">
+            <div class="cardHead">
+              <h2>
+                <span class="iconChip" aria-hidden="true" style="background: linear-gradient(135deg, rgba(245,158,11,.18), rgba(251,191,36,.14)); border-color: rgba(245,158,11,.22);">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="rgba(120,53,15,.95)" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="5" stroke="rgba(245,158,11,.95)" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="1.6" fill="rgba(14,165,233,.85)"/>
+                  </svg>
+                </span>
+                Purpose (What Cloud Enables)
+              </h2>
+              <span class="pill purposeLabel">Click to hide</span>
+            </div>
+
+            <p class="text">
+              Build a robust, automated validation + analytics system that remains fast and reliable as we scale beyond
+              single-machine limits and shared-drive bottlenecks.
+            </p>
+
+            <ul class="bullets">
+              <li><span class="key">Automation:</span> scheduled SAS jobs for monthly loads + QA test cases (repeatable runs).</li>
+              <li><span class="key">Performance:</span> faster I/O and predictable runtime for large joins and scans.</li>
+              <li><span class="key">Scale:</span> resize compute (RAM/CPU) instantly as data grows.</li>
+              <li><span class="key">Collaboration:</span> multiple users can run workflows without “my PC is busy” issues.</li>
+              <li><span class="key">Reproducibility:</span> same environment + versions → consistent outputs.</li>
+              <li><span class="key">Audit trails:</span> log runs, inputs, outputs, QC results for stakeholders.</li>
+              <li><span class="key">Disaster recovery:</span> snapshots/backups reduce risk of loss/corruption.</li>
+              <li><span class="key">Standard delivery:</span> publish curated outputs for dashboards/reporting.</li>
+            </ul>
+
+            <div class="chips">
+              <div class="chip good"><span class="dot"></span> Reliable automation</div>
+              <div class="chip good"><span class="dot"></span> Faster joins</div>
+              <div class="chip good"><span class="dot"></span> Multi-user ready</div>
+              <div class="chip good"><span class="dot"></span> Audit-ready</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADVANTAGES (flip to blank on click) -->
+        <div class="flip" id="flip" title="Click to flip (show/hide)">
+          <div class="flipHint">Click to hide/show</div>
+
+          <div class="flipInner" id="flipInner">
+            <div class="face front">
+              <div class="highlightBar purple"></div>
+
+              <div class="cardHead" style="margin-bottom:10px">
+                <h2>
+                  <span class="iconChip" aria-hidden="true">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                      <path d="M14 3c-3 1-6.5 4.5-7.5 7.5L5 14l3.5-1.5C11.5 11.5 15 8 16 5c.3-.9-1.1-2.3-2-2Z"
+                            fill="rgba(14,165,233,.28)" stroke="rgba(15,23,42,.85)" stroke-width="1.6" stroke-linejoin="round"/>
+                      <path d="M9.3 9.3l5.4 5.4" stroke="rgba(20,184,166,.95)" stroke-width="2" stroke-linecap="round"/>
+                      <path d="M6.5 17.5c.6-2.1 2-3.5 4.2-4.2" stroke="rgba(168,85,247,.85)" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                  </span>
+                  Advantages (Cloud)
+                </h2>
+                <span class="pill">Click to hide</span>
+              </div>
+
+              <ul class="bullets">
+                <li><span class="key">Scales on demand:</span> increase RAM/CPU only when needed (pay-as-you-go).</li>
+                <li><span class="key">Predictable runs:</span> fewer reruns caused by shared-drive slowness.</li>
+                <li><span class="key">Faster cross-table joins:</span> stable compute + better storage throughput.</li>
+                <li><span class="key">Standard environment:</span> consistent results for all users.</li>
+                <li><span class="key">Parallel pipelines:</span> dev/test/prod runs without blocking others.</li>
+              </ul>
+
+              <div class="chips">
+                <div class="chip good"><span class="dot"></span> Elastic compute</div>
+                <div class="chip good"><span class="dot"></span> Faster runtime</div>
+                <div class="chip good"><span class="dot"></span> Stable outputs</div>
+              </div>
+
+              <div style="margin-top:14px; border-radius:18px; border:1px solid rgba(168,85,247,.18);
+                background: linear-gradient(135deg, rgba(168,85,247,.12), rgba(14,165,233,.10));
+                padding:14px; backdrop-filter: blur(8px);">
+                <div style="display:flex; justify-content:space-between; gap:12px; font-size: var(--p); color: var(--muted); line-height:1.6;">
+                  <div><span class="key">Cloud VM (64GB equiv.)</span> — example @ ~300 hrs/month</div>
+                  <div style="font-family:var(--mono); color:var(--ink); font-weight:900;">~$180–$250/mo</div>
+                </div>
+                <div style="margin-top:10px; font-size: var(--small); color: var(--muted); line-height: 1.5;">
+                  Compute billed only while the VM is running; stop after jobs finish to control cost.
+                </div>
+              </div>
+            </div>
+
+            <!-- BACK: blank -->
+            <div class="face back" aria-hidden="true">
+              <div style="font-size:22px; color: rgba(71,85,105,.70); font-weight:900;">Hidden (click to show)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cloud tradeoffs (click hide/show) -->
+        <div class="card theme-warn hideable" id="disCard" data-hideable>
+          <div class="highlightBar warn"></div>
+          <div class="blankOverlay">Hidden (click to show)</div>
+
+          <div class="content">
+            <div class="cardHead">
+              <h2>
+                <span class="iconChip" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3 22 20H2L12 3Z" fill="rgba(249,115,22,.18)" stroke="rgba(15,23,42,.85)" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M12 9v5" stroke="rgba(239,68,68,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <circle cx="12" cy="17" r="1.2" fill="rgba(239,68,68,.85)"/>
+                  </svg>
+                </span>
+                Disadvantages / Tradeoffs (Cloud)
+              </h2>
+              <span class="pill">Click to hide</span>
+            </div>
+
+            <ul class="bullets">
+              <li><span class="key">Monthly cloud spend:</span> needs budgeting + stop/start discipline.</li>
+              <li><span class="key">Ops ownership:</span> access setup, patching, monitoring need a simple runbook.</li>
+              <li><span class="key">Onboarding:</span> short training for team (where to run jobs, where outputs live).</li>
+            </ul>
+
+            <div class="chips">
+              <div class="chip warn"><span class="dot"></span> Cost control</div>
+              <div class="chip warn"><span class="dot"></span> Basic ops</div>
+              <div class="chip warn"><span class="dot"></span> Monitoring</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sensitive data box (click hide/show) -->
+        <div class="card theme-sec hideable" id="phiCard" data-hideable>
+          <div class="highlightBar sec"></div>
+          <div class="blankOverlay">Hidden (click to show)</div>
+
+          <div class="content">
+            <div class="cardHead">
+              <h2>
+                <span class="iconChip" aria-hidden="true" style="background: linear-gradient(135deg, rgba(22,163,74,.14), rgba(14,165,233,.12));">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 3l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V7l8-4Z"
+                          fill="rgba(22,163,74,.12)" stroke="rgba(15,23,42,.85)" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M8.5 12.2l2.1 2.2L15.8 9.6" stroke="rgba(22,163,74,.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Handling Sensitive Data (Patient Identifiers / PHI)
+              </h2>
+              <span class="pill">Click to hide</span>
+            </div>
+
+            <ul class="bullets">
+              <li><span class="key">Restricted access:</span> role-based permissions (only approved staff can view PHI).</li>
+              <li><span class="key">Encryption:</span> encrypt data at rest + in transit.</li>
+              <li><span class="key">Private networking:</span> keep workloads private (no public exposure).</li>
+              <li><span class="key">Audit logs:</span> track who accessed data + when.</li>
+              <li><span class="key">De-identification:</span> share derived/limited datasets for most analytics workflows.</li>
+            </ul>
+
+            <div class="chips">
+              <div class="chip good"><span class="dot"></span> Encryption</div>
+              <div class="chip good"><span class="dot"></span> Access control</div>
+              <div class="chip good"><span class="dot"></span> Auditable</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- N-Drive limitations (click hide/show) -->
+        <div class="card theme-warn hideable" id="ndrCard" data-hideable>
+          <div class="highlightBar warn"></div>
+          <div class="blankOverlay">Hidden (click to show)</div>
+
+          <div class="content">
+            <div class="cardHead">
+              <h2>
+                <span class="iconChip" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M3 7h7l2 2h9v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7Z"
+                          fill="rgba(168,85,247,.12)" stroke="rgba(15,23,42,.85)" stroke-width="1.8" stroke-linejoin="round"/>
+                    <path d="M7 14h10" stroke="rgba(14,165,233,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7 17h7" stroke="rgba(20,184,166,.85)" stroke-width="2" stroke-linecap="round"/>
+                  </svg>
+                </span>
+                Disadvantages (N-Drive + Local Compute)
+              </h2>
+              <span class="pill">Click to hide</span>
+            </div>
+
+            <ul class="bullets">
+              <li><span class="key">Network bottlenecks:</span> joins/scans depend on shared throughput.</li>
+              <li><span class="key">Unpredictable runtime:</span> performance varies with concurrent users.</li>
+              <li><span class="key">Scaling is slow:</span> adding RAM/CPU needs new hardware.</li>
+              <li><span class="key">Multi-user friction:</span> concurrent pipelines cause delays.</li>
+            </ul>
+
+            <div class="chips">
+              <div class="chip bad"><span class="dot"></span> Unpredictable performance</div>
+              <div class="chip bad"><span class="dot"></span> Hard to scale</div>
+              <div class="chip bad"><span class="dot"></span> Contention</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth use cases (click hide/show) -->
+        <div class="card theme-teal hideable" id="growthCard" data-hideable>
+          <div class="highlightBar"></div>
+          <div class="blankOverlay">Hidden (click to show)</div>
+
+          <div class="content">
+            <div class="cardHead">
+              <h2>
+                <span class="iconChip" aria-hidden="true">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 19V5" stroke="rgba(15,23,42,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M4 19h16" stroke="rgba(15,23,42,.85)" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M7 15l3-4 3 2 4-6" stroke="rgba(14,165,233,.95)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="7" cy="15" r="1.1" fill="rgba(20,184,166,.95)"/>
+                    <circle cx="10" cy="11" r="1.1" fill="rgba(20,184,166,.95)"/>
+                    <circle cx="13" cy="13" r="1.1" fill="rgba(20,184,166,.95)"/>
+                    <circle cx="17" cy="7" r="1.1" fill="rgba(20,184,166,.95)"/>
+                  </svg>
+                </span>
+                Use Cases + Data Growth
+              </h2>
+              <span class="pill">Click to hide</span>
+            </div>
+
+            <ul class="bullets">
+              <li><span class="key">Data growth:</span> 100GB → 500GB → 1TB+ (retention + more sources).</li>
+              <li><span class="key">Cross-table joins:</span> claims × provider × eligibility × reference lists.</li>
+              <li><span class="key">Automation:</span> 35 QA tests today → 100+ regression/anomaly checks later.</li>
+              <li><span class="key">Multi-user:</span> curated outputs for analysts and reporting tools.</li>
+            </ul>
+
+            <div class="chips">
+              <div class="chip good"><span class="dot"></span> Scales with growth</div>
+              <div class="chip good"><span class="dot"></span> Supports many users</div>
+              <div class="chip good"><span class="dot"></span> Audit-ready runs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<!-- Phase 1 architecture link (placeholder) -->
+<div style="
+  margin-top:18px;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(15,23,42,.10);
+  background: rgba(255,255,255,.55);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 22px rgba(2,6,23,.06);
+  font-size: var(--p);
+  color: var(--muted);
+">
+  <span style="font-weight:900; color: var(--ink);">
+    Look at Phase 1 architecture for more additional details
+  </span>
+  —
+  <a href="PHASE1_ARCHITECTURE_LINK_PLACEHOLDER"
+     target="_blank" rel="noopener"
+     style="
+       color: var(--accent);
+       font-weight: 900;
+       text-decoration: none;
+       border-bottom: 3px solid rgba(14,165,233,.35);
+       padding-bottom: 2px;
+     ">
+    open here
+  </a>
+</div>
+      <div class="footer" id="bottom">
+        <div>
+          <span class="key">Shortcuts:</span>
+          <span class="kbd">H</span> highlight,
+          <span class="kbd">J</span> jump,
+          <span class="kbd">F</span> flip advantage block.
+        </div>
+        <div>Click any card to hide/show • Flip block hides to blank</div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const pulseBtn = document.getElementById('pulseBtn');
+    const scrollBtn = document.getElementById('scrollBtn');
+
+    const purposeCard = document.getElementById('purposeCard');
+    const flip = document.getElementById('flip');
+    const disCard = document.getElementById('disCard');
+    const phiCard = document.getElementById('phiCard');
+    const ndrCard = document.getElementById('ndrCard');
+    const growthCard = document.getElementById('growthCard');
+
+    // Flip behavior: click -> flip to blank, click again -> show content
+    flip.addEventListener('click', ()=> flip.classList.toggle('isFlipped'));
+
+    // Click-to-hide/show for ALL hideable cards
+    function setupHideable(el){
+      el.addEventListener('click', (e)=>{
+        // allow text selection? we keep user-select none, so OK
+        // prevent accidental toggle when clicking links/buttons (none here)
+        el.classList.toggle('isHidden');
+      });
+    }
+    document.querySelectorAll('[data-hideable]').forEach(setupHideable);
+
+    // Highlight animation
+    function pulse(el, color='rgba(14,165,233,.16)'){
+      const original = getComputedStyle(el).boxShadow;
+      el.animate(
+        [
+          { transform: 'translateY(0)', boxShadow: original },
+          { transform: 'translateY(-3px)', boxShadow: `0 22px 55px ${color}` },
+          { transform: 'translateY(0)', boxShadow: original }
+        ],
+        { duration: 900, iterations: 1, easing: 'cubic-bezier(.2,.8,.2,1)' }
+      );
+    }
+
+    function highlightAll(){
+      pulse(purposeCard, 'rgba(245,158,11,.22)');
+      pulse(flip, 'rgba(168,85,247,.18)');
+      pulse(disCard, 'rgba(249,115,22,.18)');
+      pulse(phiCard, 'rgba(22,163,74,.16)');
+      pulse(ndrCard, 'rgba(249,115,22,.16)');
+      pulse(growthCard, 'rgba(20,184,166,.16)');
+    }
+
+    pulseBtn.addEventListener('click', highlightAll);
+
+    scrollBtn.addEventListener('click', ()=>{
+      document.getElementById('bottom').scrollIntoView({behavior:'smooth', block:'end'});
+    });
+
+    // Keyboard shortcuts:
+    // H highlight, J jump, F flip, 1-5 toggle cards
+    document.addEventListener('keydown', (e)=>{
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      const typing = (tag === 'input' || tag === 'textarea');
+      if(typing) return;
+
+      const k = e.key.toLowerCase();
+      if(k === 'h'){ e.preventDefault(); highlightAll(); }
+      if(k === 'j'){ e.preventDefault(); document.getElementById('bottom').scrollIntoView({behavior:'smooth'}); }
+      if(k === 'f'){ e.preventDefault(); flip.classList.toggle('isFlipped'); }
+
+      // Optional quick toggles
+      if(k === '1') purposeCard.classList.toggle('isHidden');
+      if(k === '2') disCard.classList.toggle('isHidden');
+      if(k === '3') phiCard.classList.toggle('isHidden');
+      if(k === '4') ndrCard.classList.toggle('isHidden');
+      if(k === '5') growthCard.classList.toggle('isHidden');
+    });
+
+    // Initial gentle highlight once
+    setTimeout(()=> highlightAll(), 520);
+  </script>
+</body>
+</html>
