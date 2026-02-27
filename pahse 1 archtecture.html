@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Phase 1 Architecture — SAS + Cloud VM Only</title>
+
+  <style>
+    :root{
+      --bg:#f7fafc;
+      --panel:#ffffff;
+      --panel2:#f1f5f9;
+      --ink:#0f172a;
+      --muted:#475569;
+      --line:#e2e8f0;
+
+      --sky:#0ea5e9;
+      --teal:#14b8a6;
+      --purple:#a855f7;
+      --gold:#f59e0b;
+      --good:#16a34a;
+      --warn:#f97316;
+
+      --shadow: 0 18px 45px rgba(2, 6, 23, 0.10);
+      --shadow2: 0 10px 30px rgba(2, 6, 23, 0.08);
+      --r: 22px;
+
+      --h1: 44px;
+      --h2: 26px;
+      --p: 20px;
+      --small: 16px;
+
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 520px at 12% 12%, rgba(20,184,166,.18), transparent 60%),
+        radial-gradient(900px 520px at 90% 18%, rgba(14,165,233,.18), transparent 60%),
+        radial-gradient(900px 520px at 55% 92%, rgba(168,85,247,.14), transparent 60%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      width:100%;
+      min-height:100vh;
+      padding: 26px 26px 34px;
+      position:relative;
+    }
+
+    /* Top bar */
+    .ribbon{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 18px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.78);
+      backdrop-filter: blur(10px);
+      border-radius: var(--r);
+      box-shadow: var(--shadow2);
+      position: sticky;
+      top: 10px;
+      z-index: 10;
+    }
+
+    .brand{
+      display:flex; align-items:center; gap: 14px;
+      min-width: 320px;
+    }
+
+    .badge{
+      width: 46px; height: 46px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(14,165,233,.25), rgba(20,184,166,.25));
+      border: 1px solid rgba(14,165,233,.30);
+      display:grid; place-items:center;
+      box-shadow: 0 14px 28px rgba(14,165,233,.12);
+      overflow:hidden;
+    }
+
+    .titlewrap{line-height:1.06}
+    .titlewrap b{font-size: 18px; letter-spacing:.25px}
+    .titlewrap span{display:block; color: var(--muted); font-size: var(--small); margin-top:4px}
+
+    .actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+    .btn{
+      appearance:none;
+      border:1px solid var(--line);
+      background: white;
+      color: var(--ink);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 10px 20px rgba(2,6,23,.05);
+      display:inline-flex; align-items:center; gap:10px;
+      font-size: 16px;
+      user-select:none;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    .btn:hover{
+      border-color: rgba(14,165,233,.35);
+      box-shadow: 0 14px 26px rgba(2,6,23,.08);
+      transform: translateY(-1px);
+    }
+    .btn.primary{
+      border-color: rgba(14,165,233,.35);
+      background: linear-gradient(135deg, rgba(14,165,233,.10), rgba(20,184,166,.10));
+    }
+    .kbd{
+      font-family: var(--mono);
+      padding: 2px 6px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(241,245,249,.9);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    /* Main panel */
+    .panel{
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.80);
+      backdrop-filter: blur(10px);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      overflow:hidden;
+    }
+
+    h1{font-size: var(--h1); margin: 0 0 10px 0;}
+    .lede{
+      margin: 0 0 18px 0;
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 110ch;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items:start;
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: white;
+      padding: 18px;
+      box-shadow: 0 14px 30px rgba(2,6,23,.06);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .card h2{
+      font-size: var(--h2);
+      margin: 0 0 10px 0;
+    }
+
+    .bullets{
+      margin: 10px 0 0;
+      padding-left: 22px;
+      font-size: var(--p);
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .bullets li{margin: 8px 0}
+    .key{color: var(--ink); font-weight: 900;}
+
+    /* Flowchart at bottom */
+    .flowWrap{
+      margin-top: 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(14,165,233,.18);
+      background: linear-gradient(135deg, rgba(14,165,233,.06), rgba(20,184,166,.06));
+      padding: 16px;
+      overflow:hidden;
+    }
+    .flowTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap: 14px;
+      flex-wrap:wrap;
+      margin-bottom: 10px;
+    }
+    .flowTitle h2{
+      margin:0;
+      font-size: 28px;
+      letter-spacing:.2px;
+    }
+    .flowHint{
+      color: var(--muted);
+      font-size: var(--small);
+    }
+
+    svg.diagram{width:100%; height:auto; display:block;}
+
+    @media (max-width: 1100px){
+      .grid{grid-template-columns: 1fr;}
+      h1{font-size: 38px}
+      :root{ --p: 19px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="ribbon">
+      <div class="brand">
+        <div class="badge" aria-hidden="true">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="5" width="16" height="10" rx="2" fill="rgba(14,165,233,.12)" stroke="rgba(15,23,42,.85)" stroke-width="2"/>
+            <path d="M8 19h8" stroke="rgba(20,184,166,.95)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M12 15v4" stroke="rgba(168,85,247,.85)" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="titlewrap">
+          <b>Phase 1 Architecture</b>
+          <span>SAS + Cloud VM only (no Snowflake) — flowchart at bottom</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="jumpFlow">⬇ Flowchart</button>
+        <button class="btn" id="jumpTop">⬆ Top</button>
+      </div>
+    </div>
+
+    <section class="panel" id="top">
+      <h1>Phase 1 (SAS + Cloud VM Only)</h1>
+      <p class="lede">
+        In Phase 1, we move SAS to a <span class="key">Cloud VM</span> and run a monthly pipeline with automated QA checks.
+        This supports growth, heavy joins, and multi-user access without adding Snowflake yet.
+      </p>
+
+      <div class="grid">
+        <div class="card">
+          <h2>What Phase 1 Delivers</h2>
+          <ul class="bullets">
+            <li><span class="key">Monthly pipeline:</span> ingest → transform → validate → publish</li>
+            <li><span class="key">Automated QA:</span> ~35 test cases (counts, duplicates, missingness, code checks)</li>
+            <li><span class="key">Repeatability:</span> standard outputs + run logs</li>
+            <li><span class="key">Collaboration:</span> shared compute environment + access control</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Key Components</h2>
+          <ul class="bullets">
+            <li><span class="key">Cloud VM:</span> SAS 9.4 batch + schedulers</li>
+            <li><span class="key">Staging folder:</span> mounted storage / VM disk</li>
+            <li><span class="key">Validation outputs:</span> Excel/CSV + curated SAS datasets</li>
+            <li><span class="key">Alerts:</span> optional email on failures</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- FLOWCHART ON BOTTOM -->
+      <div class="flowWrap" id="flow">
+        <div class="flowTitle">
+          <h2>Phase 1 Architecture Flowchart</h2>
+          <div class="flowHint">Bigger arrows + bigger labels for “ingest / process / validate / share”.</div>
+        </div>
+
+        <svg class="diagram" viewBox="0 0 1100 650" role="img" aria-label="Phase 1 SAS + Cloud VM architecture diagram (extra large arrows)">
+          <defs>
+            <linearGradient id="b1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="rgba(14,165,233,.18)"/>
+              <stop offset="1" stop-color="rgba(20,184,166,.14)"/>
+            </linearGradient>
+            <linearGradient id="b2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="rgba(245,158,11,.16)"/>
+              <stop offset="1" stop-color="rgba(14,165,233,.12)"/>
+            </linearGradient>
+            <linearGradient id="b3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="rgba(168,85,247,.14)"/>
+              <stop offset="1" stop-color="rgba(14,165,233,.10)"/>
+            </linearGradient>
+
+            <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="rgba(2,6,23,.14)"/>
+            </filter>
+            <filter id="pillSh" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="rgba(2,6,23,.10)"/>
+            </filter>
+          </defs>
+
+          <!-- Boxes -->
+          <g filter="url(#sh)">
+            <!-- 1) Data arrival -->
+            <rect x="40" y="55" rx="26" ry="26" width="310" height="150" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="40" y="55" rx="26" ry="26" width="12" height="150" fill="rgba(245,158,11,.88)"/>
+            <text x="75" y="105" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Monthly Medicaid Data</text>
+            <text x="75" y="140" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Inbound files / extracts</text>
+            <text x="75" y="170" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Claims + reference lists</text>
+
+            <!-- 2) Staging -->
+            <rect x="395" y="55" rx="26" ry="26" width="320" height="150" fill="url(#b2)" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="395" y="55" rx="26" ry="26" width="12" height="150" fill="rgba(14,165,233,.84)"/>
+            <text x="430" y="105" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Cloud Staging Area</text>
+            <text x="430" y="140" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">VM disk / mounted storage</text>
+            <text x="430" y="170" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Standard folder structure</text>
+
+            <!-- 3) SAS VM -->
+            <rect x="760" y="55" rx="26" ry="26" width="300" height="150" fill="url(#b1)" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="760" y="55" rx="26" ry="26" width="12" height="150" fill="rgba(20,184,166,.88)"/>
+            <text x="795" y="105" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Cloud VM + SAS</text>
+            <text x="795" y="140" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">SAS 9.4 / batch jobs</text>
+            <text x="795" y="170" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">64GB+ RAM (scalable)</text>
+
+            <!-- 4) QA tests -->
+            <rect x="150" y="295" rx="26" ry="26" width="420" height="170" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="150" y="295" rx="26" ry="26" width="12" height="170" fill="rgba(168,85,247,.88)"/>
+            <text x="185" y="345" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Automated QA Test Suite</text>
+            <text x="185" y="380" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">~35 checks (pass/fail)</text>
+            <text x="185" y="410" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Counts, duplicates, missingness</text>
+            <text x="185" y="440" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Codes, line logic, joins</text>
+
+            <!-- 5) Outputs -->
+            <rect x="610" y="295" rx="26" ry="26" width="450" height="170" fill="url(#b3)" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="610" y="295" rx="26" ry="26" width="12" height="170" fill="rgba(245,158,11,.88)"/>
+            <text x="645" y="345" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Published Outputs</text>
+            <text x="645" y="380" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Curated SAS datasets</text>
+            <text x="645" y="410" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Excel/CSV validation report</text>
+            <text x="645" y="440" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Run logs + audit trail</text>
+
+            <!-- 6) Stakeholders -->
+            <rect x="270" y="515" rx="26" ry="26" width="560" height="105" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <rect x="270" y="515" rx="26" ry="26" width="12" height="105" fill="rgba(20,184,166,.88)"/>
+            <text x="305" y="580" font-size="26" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="800">Stakeholders & Reporting</text>
+            <text x="690" y="580" font-size="20" font-family="system-ui" fill="rgba(71,85,105,.95)">Dashboards / QA review</text>
+          </g>
+
+          <!-- EXTRA LARGE ARROWS -->
+          <g fill="none" stroke="rgba(71,85,105,.66)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M350 130h45"/>
+            <path d="M715 130h45"/>
+            <path d="M910 205v65c0 30-16 45-45 45H610"/>
+            <path d="M570 380h40"/>
+            <path d="M835 465v55"/>
+          </g>
+
+          <!-- EXTRA LARGE ARROWHEADS -->
+          <g fill="rgba(71,85,105,.66)">
+            <polygon points="405,130 375,110 375,150"/>
+            <polygon points="765,130 735,110 735,150"/>
+            <polygon points="610,380 580,360 580,400"/>
+            <polygon points="835,520 815,485 855,485"/>
+          </g>
+
+          <!-- BIG LABEL PILLS -->
+          <g filter="url(#pillSh)">
+            <rect x="350" y="82" rx="18" ry="18" width="140" height="46" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <text x="420" y="114" text-anchor="middle" font-size="24" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="900">ingest</text>
+
+            <rect x="710" y="82" rx="18" ry="18" width="160" height="46" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <text x="790" y="114" text-anchor="middle" font-size="24" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="900">process</text>
+
+            <rect x="510" y="332" rx="18" ry="18" width="175" height="46" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <text x="597.5" y="364" text-anchor="middle" font-size="24" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="900">validate</text>
+
+            <rect x="780" y="478" rx="18" ry="18" width="135" height="46" fill="white" stroke="rgba(226,232,240,1)" stroke-width="2"/>
+            <text x="847.5" y="510" text-anchor="middle" font-size="24" font-family="system-ui" fill="rgba(15,23,42,.92)" font-weight="900">share</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const jumpFlow = document.getElementById('jumpFlow');
+    const jumpTop = document.getElementById('jumpTop');
+
+    jumpFlow.addEventListener('click', ()=> {
+      document.getElementById('flow').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    jumpTop.addEventListener('click', ()=> {
+      document.getElementById('top').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  </script>
+</body>
+</html>
