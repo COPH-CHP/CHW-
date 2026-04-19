@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHW Dashboard</title>
+
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --ink:#15324b;
+      --muted:#5c6b7a;
+      --accent:#008b95;
+      --accent-dark:#006c74;
+      --line:#e6ebf2;
+      --shadow:0 10px 30px rgba(18,33,53,.08);
+      --radius:20px;
+    }
+
+    * { box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family:Arial, Helvetica, sans-serif;
+      background:linear-gradient(180deg,#eef6f8 0%, var(--bg) 100%);
+      color:var(--ink);
+    }
+
+    .wrap{
+      width:100%;
+      max-width:none;
+      margin:0;
+      padding:24px 28px;
+    }
+
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+      flex-wrap:wrap;
+      margin-bottom:22px;
+    }
+
+    .hero h1{
+      margin:0 0 8px;
+      font-size:clamp(2rem, 4vw, 3rem);
+      line-height:1.05;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      max-width:1100px;
+      line-height:1.6;
+      font-size:1rem;
+    }
+
+    .toolbar{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:18px;
+      margin-bottom:20px;
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:14px;
+      align-items:end;
+    }
+
+    .toolbar label{
+      display:block;
+      font-size:.9rem;
+      font-weight:700;
+      margin-bottom:6px;
+    }
+
+    .toolbar input,
+    .toolbar select{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #dce4ee;
+      border-radius:12px;
+      font-weight:600;
+      background:#fff;
+    }
+
+    .toolbar button{
+      border:0;
+      background:var(--accent);
+      color:#fff;
+      padding:12px 16px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      transition:background .15s ease;
+    }
+
+    .toolbar button:hover{ background:var(--accent-dark); }
+    .toolbar button.secondary{ background:#4b5a68; }
+
+    .status{
+      color:var(--muted);
+      font-size:.92rem;
+      margin-top:4px;
+    }
+
+    .kpis{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:16px;
+      margin-bottom:22px;
+    }
+
+    .kpi{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:18px 18px 16px;
+    }
+
+    .kpi .label{
+      font-size:.9rem;
+      color:var(--muted);
+      margin-bottom:10px;
+      font-weight:700;
+    }
+
+    .kpi .value{
+      font-size:2rem;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:18px;
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:var(--shadow);
+      padding:14px;
+      min-height:440px;
+    }
+
+    .card h3{
+      margin:4px 6px 12px;
+      font-size:1.05rem;
+    }
+
+    .span-12{grid-column:span 12}
+    .span-8{grid-column:span 8}
+    .span-6{grid-column:span 6}
+    .span-4{grid-column:span 4}
+
+    @media (max-width:1100px){
+      .span-8,.span-6,.span-4{grid-column:span 12}
+    }
+
+    .chart{ width:100%; height:380px; }
+    .chart.tall{ height:500px; }
+
+    .footer-note{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.9rem;
+      line-height:1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1>CHW Dashboard</h1>
+        <p>
+          Upload the generated Excel or CSV file to create an interactive CHW dashboard website with provider count,
+          beneficiary count, service trends, diagnosis and procedure patterns, managed care distribution, SDOH views,
+          and a New Mexico county service volume map with county boundaries.
+        </p>
+      </div>
+    </section>
+
+    <section class="toolbar">
+      <div>
+        <label for="fileInput">Upload Excel / CSV</label>
+        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" />
+        <div class="status" id="fileStatus">No file loaded yet.</div>
+      </div>
+
+      <div>
+        <label for="planFilter">Managed Care Filter</label>
+        <select id="planFilter">
+          <option value="ALL">All Plans</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="countyFilter">County Filter</label>
+        <select id="countyFilter">
+          <option value="ALL">All Counties</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="providerFilter">Provider Filter</label>
+        <select id="providerFilter">
+          <option value="ALL">All Providers</option>
+        </select>
+      </div>
+
+      <div>
+        <button id="renderBtn" type="button">Render Dashboard</button>
+        <button id="resetBtn" class="secondary" type="button">Reset Filters</button>
+      </div>
+    </section>
+
+    <section class="kpis">
+      <div class="kpi"><div class="label">Number of Service Records</div><div class="value" id="kpiRows">0</div></div>
+      <div class="kpi"><div class="label">Number of Unique Providers</div><div class="value" id="kpiProviders">0</div></div>
+      <div class="kpi"><div class="label">Number of Unique Beneficiaries</div><div class="value" id="kpiMembers">0</div></div>
+      <div class="kpi"><div class="label">Total Number of Visits</div><div class="value" id="kpiVisits">0</div></div>
+      <div class="kpi"><div class="label">Total Paid Amount</div><div class="value" id="kpiPaid">$0</div></div>
+      <div class="kpi"><div class="label">Average Paid Amount per Service Record</div><div class="value" id="kpiAvgPaid">$0</div></div>
+      <div class="kpi"><div class="label">Number of Counties Represented</div><div class="value" id="kpiCounties">0</div></div>
+    </section>
+
+    <section class="grid">
+      <div class="card span-8">
+        <h3>1. Monthly Time Trend of Total Visits</h3>
+        <div id="chart1" class="chart"></div>
+      </div>
+
+      <div class="card span-4">
+        <h3>2. Race / Ethnicity Distribution</h3>
+        <div id="chart2" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>3. Top Diagnosis Categories</h3>
+        <div id="chart3" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>4. Diagnosis by Procedure Heatmap</h3>
+        <div id="chart4" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>5. Managed Care Distribution</h3>
+        <div id="chart5" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>6. New Mexico County Service Volume Map</h3>
+        <div id="chart6" class="chart tall"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>7. Top Providers by Service Volume</h3>
+        <div id="chart7" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>8. Place of Service by Claim Type</h3>
+        <div id="chart8" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>9. SDOH Indicator Distribution</h3>
+        <div id="chart9" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>10. Paid Amount by Managed Care</h3>
+        <div id="chart10" class="chart"></div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      This version forces month labels to stay categorical and shows separated New Mexico county lines on the map.
+    </div>
+  </div>
+
+  <script>
+    let rawData = [];
+    let nmCountyGeoJson = null;
+    let nmCountyCentroids = {};
+
+    const NM_COUNTY_FIPS = {
+      "Bernalillo": "35001",
+      "Catron": "35003",
+      "Chaves": "35005",
+      "Cibola": "35006",
+      "Colfax": "35007",
+      "Curry": "35009",
+      "De Baca": "35011",
+      "Dona Ana": "35013",
+      "Doña Ana": "35013",
+      "Eddy": "35015",
+      "Grant": "35017",
+      "Guadalupe": "35019",
+      "Harding": "35021",
+      "Hidalgo": "35023",
+      "Lea": "35025",
+      "Lincoln": "35027",
+      "Los Alamos": "35028",
+      "Luna": "35029",
+      "McKinley": "35031",
+      "Mora": "35033",
+      "Otero": "35035",
+      "Quay": "35037",
+      "Rio Arriba": "35039",
+      "Roosevelt": "35041",
+      "Sandoval": "35043",
+      "San Juan": "35045",
+      "San Miguel": "35047",
+      "Santa Fe": "35049",
+      "Sierra": "35051",
+      "Socorro": "35053",
+      "Taos": "35055",
+      "Torrance": "35057",
+      "Union": "35059",
+      "Valencia": "35061"
+    };
+
+    const chartPalette = [
+      "#008b95", "#ba0c2f", "#f39c12", "#6f42c1", "#198754",
+      "#0d6efd", "#fd7e14", "#20c997", "#dc3545", "#6610f2"
+    ];
+
+    const layoutBase = {
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      margin: {l: 60, r: 20, t: 20, b: 60},
+      font: {family: "Arial, sans-serif", color: "#15324b"}
+    };
+
+    function normHeader(h){
+      return String(h || "").trim().toLowerCase().replace(/[\s._-]+/g, "");
+    }
+
+    function normalizeCountyName(name){
+      return String(name || "")
+        .trim()
+        .replace("Doña Ana", "Dona Ana")
+        .replace("Doña", "Dona");
+    }
+
+    function renameColumns(df){
+      const alias = {
+        serviceid: "service_id",
+        providerid: "provider_id",
+        providername: "provider_name",
+        providercounty: "provider_county",
+        providerzipcode: "provider_zip_code",
+        providerspecialty: "provider_specialty",
+        providertype: "provider_type",
+        clientsystemid: "client_system_id",
+        servicedate: "service_date",
+        month: "month",
+        age: "age",
+        gender: "gender",
+        raceethnicity: "race_ethnicity",
+        county: "county",
+        zipcode: "zip_code",
+        diagcd1: "diag_cd1",
+        diagnosisdesc: "diagnosis_desc",
+        proccd: "proc_cd",
+        placeofservice: "place_of_service",
+        claimtype: "claim_type",
+        sdohindicator: "sdoh_indicator",
+        totalvisits: "total_visits",
+        procedurecount: "procedure_count",
+        paidamount: "paid_amount",
+        billedamount: "billed_amount",
+        allowedamount: "allowed_amount",
+        frequencyofcare: "frequency_of_care",
+        managedcareplan: "managed_care_plan"
+      };
+
+      return df.map(row => {
+        const out = {};
+        Object.keys(row).forEach(k => {
+          const nk = alias[normHeader(k)] || k;
+          out[nk] = row[k];
+        });
+        if (out.county) out.county = normalizeCountyName(out.county);
+        if (out.provider_county) out.provider_county = normalizeCountyName(out.provider_county);
+        return out;
+      });
+    }
+
+    function parseWorkbook(file){
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          try{
+            let wb;
+            if(file.name.toLowerCase().endsWith(".csv")){
+              wb = XLSX.read(e.target.result, {type: "string"});
+            } else {
+              wb = XLSX.read(new Uint8Array(e.target.result), {type: "array"});
+            }
+            const ws = wb.Sheets[wb.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(ws, {defval: ""});
+            resolve(renameColumns(rows));
+          } catch(err){
+            reject(err);
+          }
+        };
+        if(file.name.toLowerCase().endsWith(".csv")) reader.readAsText(file);
+        else reader.readAsArrayBuffer(file);
+      });
+    }
+
+    function num(v){
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function groupSum(data, groupKey, valueKey){
+      const map = {};
+      data.forEach(d => {
+        const k = d[groupKey] || "Unknown";
+        map[k] = (map[k] || 0) + num(d[valueKey]);
+      });
+      return Object.entries(map).map(([key, value]) => ({key, value}));
+    }
+
+    function groupRecords(data, groupKey){
+      const map = {};
+      data.forEach(d => {
+        const k = d[groupKey] || "Unknown";
+        map[k] = (map[k] || 0) + 1;
+      });
+      return Object.entries(map).map(([key, value]) => ({key, value}));
+    }
+
+    function formatMonthLabel(value){
+      if (value === null || value === undefined || value === "") return "Unknown";
+
+      const strVal = String(value).trim();
+
+      if (/^\d{4}-\d{2}$/.test(strVal)) {
+        const [year, month] = strVal.split("-");
+        const dt = new Date(Number(year), Number(month) - 1, 1);
+        return dt.toLocaleString("en-US", { month: "short" });
+      }
+
+      if (/^\d{4}-\d{2}-\d{2}/.test(strVal)) {
+        const dt = new Date(strVal);
+        if (!isNaN(dt)) {
+          return dt.toLocaleString("en-US", { month: "short" });
+        }
+      }
+
+      if (/^\d+$/.test(strVal)) {
+        const excelSerial = Number(strVal);
+        if (excelSerial > 20000) {
+          const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+          excelEpoch.setUTCDate(excelEpoch.getUTCDate() + excelSerial);
+          return excelEpoch.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+        }
+      }
+
+      const parsed = new Date(strVal);
+      if (!isNaN(parsed)) {
+        return parsed.toLocaleString("en-US", { month: "short" });
+      }
+
+      return strVal;
+    }
+
+    function bubbleSizes(values, minSize = 10, maxSize = 24){
+      const maxVal = Math.max(...values, 1);
+      return values.map(v => {
+        const scaled = Math.sqrt(v / maxVal);
+        return minSize + scaled * (maxSize - minSize);
+      });
+    }
+
+    async function loadNMCountyGeo(){
+      if (nmCountyGeoJson) return;
+
+      const topo = await fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json").then(r => r.json());
+      const counties = topojson.feature(topo, topo.objects.counties);
+
+      const nmFeatures = counties.features.filter(f => String(f.id).startsWith("35"));
+      nmCountyGeoJson = {
+        type: "FeatureCollection",
+        features: nmFeatures
+      };
+
+      nmCountyCentroids = {};
+      nmFeatures.forEach(f => {
+        const fips = String(f.id);
+        const c = d3.geoCentroid(f);
+        nmCountyCentroids[fips] = { lon: c[0], lat: c[1] };
+      });
+    }
+
+    function fillFilters(data){
+      const planSel = document.getElementById("planFilter");
+      const countySel = document.getElementById("countyFilter");
+      const providerSel = document.getElementById("providerFilter");
+
+      const plans = [...new Set(data.map(d => d.managed_care_plan).filter(Boolean))].sort();
+      const counties = [...new Set(data.map(d => d.county).filter(Boolean))].sort();
+      const providers = [...new Set(data.map(d => d.provider_name).filter(Boolean))].sort();
+
+      planSel.innerHTML = `<option value="ALL">All Plans</option>` +
+        plans.map(v => `<option value="${v}">${v}</option>`).join("");
+
+      countySel.innerHTML = `<option value="ALL">All Counties</option>` +
+        counties.map(v => `<option value="${v}">${v}</option>`).join("");
+
+      providerSel.innerHTML = `<option value="ALL">All Providers</option>` +
+        providers.map(v => `<option value="${v}">${v}</option>`).join("");
+    }
+
+    function getFilteredData(){
+      const plan = document.getElementById("planFilter").value;
+      const county = document.getElementById("countyFilter").value;
+      const provider = document.getElementById("providerFilter").value;
+
+      return rawData.filter(d => {
+        const planOk = plan === "ALL" || d.managed_care_plan === plan;
+        const countyOk = county === "ALL" || d.county === county;
+        const providerOk = provider === "ALL" || d.provider_name === provider;
+        return planOk && countyOk && providerOk;
+      });
+    }
+
+    function updateKPIs(data){
+      const rows = data.length;
+      const providers = new Set(data.map(d => d.provider_id)).size;
+      const members = new Set(data.map(d => d.client_system_id)).size;
+      const totalVisits = data.reduce((a,b) => a + num(b.total_visits), 0);
+      const totalPaid = data.reduce((a,b) => a + num(b.paid_amount), 0);
+      const avgPaid = rows ? totalPaid / rows : 0;
+      const counties = new Set(data.map(d => d.county).filter(Boolean)).size;
+
+      document.getElementById("kpiRows").textContent = rows.toLocaleString();
+      document.getElementById("kpiProviders").textContent = providers.toLocaleString();
+      document.getElementById("kpiMembers").textContent = members.toLocaleString();
+      document.getElementById("kpiVisits").textContent = totalVisits.toLocaleString();
+      document.getElementById("kpiPaid").textContent = `$${totalPaid.toLocaleString(undefined,{maximumFractionDigits:0})}`;
+      document.getElementById("kpiAvgPaid").textContent = `$${avgPaid.toLocaleString(undefined,{maximumFractionDigits:0})}`;
+      document.getElementById("kpiCounties").textContent = counties.toLocaleString();
+    }
+
+    async function renderCharts(data){
+      await loadNMCountyGeo();
+      updateKPIs(data);
+
+      const monthVisits = groupSum(data, "month", "total_visits")
+        .sort((a,b) => String(a.key).localeCompare(String(b.key)));
+
+      const monthLabels = monthVisits.map(d => formatMonthLabel(d.key));
+
+      Plotly.newPlot("chart1", [{
+        x: monthLabels,
+        y: monthVisits.map(d => d.value),
+        type: "scatter",
+        mode: "lines+markers",
+        line: {width: 4, color: "#008b95"},
+        marker: {size: 9, color: "#ba0c2f"}
+      }], {
+        ...layoutBase,
+        xaxis: {
+          title: "Month",
+          type: "category",
+          categoryorder: "array",
+          categoryarray: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]
+        },
+        yaxis: {title: "Total Number of Visits"}
+      }, {responsive:true});
+
+      const race = groupRecords(data, "race_ethnicity").sort((a,b) => b.value - a.value);
+      Plotly.newPlot("chart2", [{
+        labels: race.map(d => d.key),
+        values: race.map(d => d.value),
+        type: "pie",
+        hole: 0.5,
+        textinfo: "percent+label",
+        textposition: "inside",
+        insidetextorientation: "radial",
+        marker: {colors: chartPalette}
+      }], {
+        ...layoutBase,
+        showlegend: true,
+        margin: {l: 20, r: 20, t: 20, b: 20}
+      }, {responsive:true});
+
+      const dx = groupRecords(data, "diagnosis_desc").sort((a,b) => b.value - a.value).slice(0, 10);
+      Plotly.newPlot("chart3", [{
+        x: dx.map(d => d.value).reverse(),
+        y: dx.map(d => d.key).reverse(),
+        type: "bar",
+        orientation: "h",
+        marker: {color: "#008b95"}
+      }], {
+        ...layoutBase,
+        margin: {l: 180, r: 20, t: 20, b: 50},
+        xaxis: {title: "Number of Service Records"},
+        yaxis: {
+          title: "",
+          automargin: true,
+          tickfont: {size: 11}
+        }
+      }, {responsive:true});
+
+      const diags = [...new Set(data.map(d => d.diag_cd1).filter(Boolean))].sort();
+      const procs = [...new Set(data.map(d => String(d.proc_cd)).filter(Boolean))].sort();
+
+      const z = diags.map(diag =>
+        procs.map(proc =>
+          data.filter(d => String(d.diag_cd1) === String(diag) && String(d.proc_cd) === String(proc)).length
+        )
+      );
+
+      Plotly.newPlot("chart4", [{
+        z,
+        x: procs.map(String),
+        y: diags.map(String),
+        type: "heatmap",
+        colorscale: "Tealgrn",
+        colorbar: { title: "Diagnosis–Procedure Volume" },
+        hovertemplate:
+          "Procedure Code (X): %{x}<br>" +
+          "Diagnosis Code (Y): %{y}<br>" +
+          "Diagnosis–Procedure Volume (Z): %{z}<extra></extra>"
+      }], {
+        ...layoutBase,
+        margin: {l: 90, r: 90, t: 20, b: 60},
+        xaxis: {
+          title: "Procedure Code (X)",
+          type: "category",
+          tickmode: "array",
+          tickvals: procs.map(String),
+          ticktext: procs.map(String)
+        },
+        yaxis: {
+          title: "Diagnosis Code (Y)",
+          automargin: true,
+          tickfont: {size: 11}
+        },
+        annotations: [{
+          text: "Legend: X = Procedure Code, Y = Diagnosis Code, Z = Diagnosis–Procedure Volume",
+          xref: "paper",
+          yref: "paper",
+          x: 0,
+          y: 1.14,
+          showarrow: false,
+          font: {size: 12, color: "#5c6b7a"},
+          align: "left"
+        }]
+      }, {responsive:true});
+
+      const mco = groupRecords(data, "managed_care_plan").sort((a,b) => b.value - a.value);
+      Plotly.newPlot("chart5", [{
+        x: mco.map(d => d.key),
+        y: mco.map(d => d.value),
+        type: "bar",
+        marker: {color: chartPalette.slice(0, mco.length)}
+      }], {
+        ...layoutBase,
+        xaxis: {title: "Managed Care Plan"},
+        yaxis: {title: "Number of Service Records"}
+      }, {responsive:true});
+
+      const countyRecords = groupRecords(data, "county").sort((a,b) => b.value - a.value);
+      const countyMapRows = countyRecords
+        .map(c => {
+          const cleanCounty = normalizeCountyName(c.key);
+          const fips = NM_COUNTY_FIPS[cleanCounty];
+          if (!fips || !nmCountyCentroids[fips]) return null;
+          return {
+            county: cleanCounty,
+            value: c.value,
+            fips: fips,
+            lat: nmCountyCentroids[fips].lat,
+            lon: nmCountyCentroids[fips].lon
+          };
+        })
+        .filter(Boolean);
+
+      const bubbleVals = countyMapRows.map(d => d.value);
+      const sizes = bubbleSizes(bubbleVals, 10, 22);
+
+      const countyOutlineTrace = {
+  type: "choropleth",
+  geojson: nmCountyGeoJson,
+  featureidkey: "id",
+  locations: nmCountyGeoJson.features.map(f => String(f.id)),
+  z: nmCountyGeoJson.features.map(() => 1),
+  colorscale: [[0, "#5FCBCB"], [1, "#5FCBCB"]],
+  showscale: false,
+  marker: {
+    line: {
+      color: "#2f4f4f",
+      width: 1.2
+    }
+  },
+  hoverinfo: "skip"
+};
+
+      const countyBubbleTrace = {
+        type: "scattergeo",
+        mode: "markers",
+        lat: countyMapRows.map(d => d.lat),
+        lon: countyMapRows.map(d => d.lon),
+        text: countyMapRows.map(d => `${d.county}<br>County Service Volume: ${d.value}`),
+        marker: {
+          size: sizes,
+          color: bubbleVals,
+          colorscale: "Turbo",
+          opacity: 0.8,
+          line: {width: 1, color: "#ffffff"},
+          showscale: true,
+          colorbar: { title: "County Service Volume" }
+        },
+        hovertemplate: "%{text}<extra></extra>"
+      };
+
+      Plotly.newPlot("chart6", [countyOutlineTrace, countyBubbleTrace], {
+        ...layoutBase,
+        geo: {
+          scope: "usa",
+          projection: {type: "albers usa"},
+          fitbounds: "locations",
+          showland: true,
+          landcolor: "#dff7f7",
+          showcountries: false,
+          showsubunits: false,
+          showlakes: false,
+          bgcolor: "#ffffff"
+        },
+        margin: {l:0, r:0, t:0, b:0}
+      }, {responsive:true});
+
+      const providerRecords = groupRecords(data, "provider_name").sort((a,b) => b.value - a.value).slice(0, 15);
+      Plotly.newPlot("chart7", [{
+        x: providerRecords.map(d => d.value).reverse(),
+        y: providerRecords.map(d => d.key).reverse(),
+        type: "bar",
+        orientation: "h",
+        marker: {color: "#ba0c2f"}
+      }], {
+        ...layoutBase,
+        margin: {l: 230, r: 20, t: 20, b: 50},
+        xaxis: {title: "Number of Service Records"},
+        yaxis: {
+          title: "",
+          automargin: true,
+          tickfont: {size: 10}
+        }
+      }, {responsive:true});
+
+      const posClaim = {};
+      data.forEach(d => {
+        const pos = d.place_of_service || "Unknown";
+        const claim = d.claim_type || "Unknown";
+        posClaim[pos] = posClaim[pos] || {};
+        posClaim[pos][claim] = (posClaim[pos][claim] || 0) + 1;
+      });
+
+      const posLabels = Object.keys(posClaim);
+      const claimTypes = [...new Set(data.map(d => d.claim_type).filter(Boolean))];
+
+      const traces8 = claimTypes.map((ct, i) => ({
+        x: posLabels,
+        y: posLabels.map(p => posClaim[p][ct] || 0),
+        type: "bar",
+        name: ct,
+        marker: {color: chartPalette[i % chartPalette.length]}
+      }));
+
+      Plotly.newPlot("chart8", traces8, {
+        ...layoutBase,
+        barmode: "stack",
+        xaxis: {title: "Place of Service"},
+        yaxis: {title: "Number of Service Records"}
+      }, {responsive:true});
+
+      const sdoh = groupRecords(data, "sdoh_indicator").sort((a,b) => b.value - a.value);
+      Plotly.newPlot("chart9", [{
+        x: sdoh.map(d => d.key),
+        y: sdoh.map(d => d.value),
+        type: "bar",
+        marker: {
+          color: sdoh.map((_, i) => chartPalette[i % chartPalette.length])
+        }
+      }], {
+        ...layoutBase,
+        xaxis: {title: "SDOH Indicator"},
+        yaxis: {title: "Number of Service Records"}
+      }, {responsive:true});
+
+      const boxPlans = [...new Set(data.map(d => d.managed_care_plan).filter(Boolean))];
+      const traces10 = boxPlans.map((plan, i) => ({
+        y: data.filter(d => d.managed_care_plan === plan).map(d => num(d.paid_amount)),
+        name: plan,
+        type: "box",
+        boxpoints: false,
+        marker: {color: chartPalette[i % chartPalette.length]},
+        line: {color: chartPalette[i % chartPalette.length]}
+      }));
+
+      Plotly.newPlot("chart10", traces10, {
+        ...layoutBase,
+        yaxis: {title: "Paid Amount"}
+      }, {responsive:true});
+    }
+
+    async function renderDashboard(){
+      const data = getFilteredData();
+      await renderCharts(data);
+    }
+
+    document.getElementById("fileInput").addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if(!file) return;
+
+      const status = document.getElementById("fileStatus");
+      status.textContent = "Reading file...";
+
+      try{
+        rawData = await parseWorkbook(file);
+        fillFilters(rawData);
+        status.textContent = `Loaded ${file.name} — ${rawData.length} rows`;
+        await renderDashboard();
+      } catch(err){
+        console.error(err);
+        status.textContent = `Error: ${err.message}`;
+      }
+    });
+
+    document.getElementById("renderBtn").addEventListener("click", async () => {
+      if(!rawData.length){
+        alert("Upload the Excel file first.");
+        return;
+      }
+      await renderDashboard();
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      document.getElementById("planFilter").value = "ALL";
+      document.getElementById("countyFilter").value = "ALL";
+      document.getElementById("providerFilter").value = "ALL";
+      if(rawData.length) await renderDashboard();
+    });
+  </script>
+</body>
+</html>
