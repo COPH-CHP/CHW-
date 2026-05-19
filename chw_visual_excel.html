@@ -180,13 +180,14 @@
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <section class="hero">
       <div>
         <h1>CHW Dashboard</h1>
         <p>
-            This is a prototype of CHW dashboards and is based on a dummy dataset. All numbers shown here are made up for demonstration purposes.
+          This is a prototype of CHW dashboards and is based on a dummy dataset. All numbers shown here are made up for demonstration purposes.
         </p>
       </div>
     </section>
@@ -194,7 +195,7 @@
     <section class="toolbar">
       <div>
         <label>Data Source</label>
-        <input type="text" value="chw_dashboard_final (2).xlsx" readonly />
+        <input type="text" value="chw_dashboard_final_updated.xlsx" readonly />
         <div class="status" id="fileStatus">Loading default file...</div>
       </div>
 
@@ -262,7 +263,7 @@
       </div>
 
       <div class="card span-6">
-        <h3>6. New Mexico County Service Volume Map</h3>
+        <h3>6. New Mexico County Service Volume Heat Map</h3>
         <div id="chart6" class="chart tall"></div>
       </div>
 
@@ -285,19 +286,28 @@
         <h3>10. Paid Amount by Managed Care</h3>
         <div id="chart10" class="chart"></div>
       </div>
+
+      <div class="card span-6">
+        <h3>12. Denied Claims by County</h3>
+        <div id="chart12" class="chart"></div>
+      </div>
+
+      <div class="card span-6">
+        <h3>13. Monthly Average CHW Hours</h3>
+        <div id="chart13" class="chart"></div>
+      </div>
     </section>
 
     <div class="footer-note">
-      Put this HTML file and <strong>chw_dashboard_final (2).xlsx</strong> in the same folder.
+      Put this HTML file and <strong>chw_dashboard_final_updated.xlsx</strong> in the same folder.
       Open it through a local server if needed.
     </div>
   </div>
 
   <script>
     let rawData = [];
-    const DEFAULT_DATA_FILE = "chw_dashboard_final (2).xlsx";
+    const DEFAULT_DATA_FILE = "chw_dashboard_final_updated.xlsx";
     let nmCountyGeoJson = null;
-    let nmCountyCentroids = {};
 
     const NM_COUNTY_FIPS = {
       "Bernalillo": "35001",
@@ -361,13 +371,10 @@
 
     function renameColumns(df){
       const alias = {
-        serviceid: "service_id",
         providerid: "provider_id",
         providername: "provider_name",
-        providercounty: "provider_county",
-        providerzipcode: "provider_zip_code",
-        providerspecialty: "provider_specialty",
         providertype: "provider_type",
+        providerspecialty: "provider_specialty",
         clientsystemid: "client_system_id",
         servicedate: "service_date",
         month: "month",
@@ -388,7 +395,15 @@
         billedamount: "billed_amount",
         allowedamount: "allowed_amount",
         frequencyofcare: "frequency_of_care",
-        managedcareplan: "managed_care_plan"
+        managedcareplan: "managed_care_plan",
+
+        averagechwhours: "average_chw_hours",
+        serviceunits: "service_units",
+        monthlycapstatus: "monthly_cap_status",
+        countytotalclaims: "county_total_claims",
+        countypaidcount: "county_paid_count",
+        countydeniedcount: "county_denied_count",
+        countydeniedpct: "county_denied_pct"
       };
 
       return df.map(row => {
@@ -397,8 +412,9 @@
           const nk = alias[normHeader(k)] || k;
           out[nk] = row[k];
         });
+
         if (out.county) out.county = normalizeCountyName(out.county);
-        if (out.provider_county) out.provider_county = normalizeCountyName(out.provider_county);
+
         return out;
       });
     }
@@ -410,15 +426,7 @@
       }
 
       const arrayBuffer = await response.arrayBuffer();
-      let wb;
-
-      if (filePath.toLowerCase().endsWith(".csv")) {
-        const text = new TextDecoder("utf-8").decode(arrayBuffer);
-        wb = XLSX.read(text, { type: "string" });
-      } else {
-        wb = XLSX.read(arrayBuffer, { type: "array" });
-      }
-
+      const wb = XLSX.read(arrayBuffer, { type: "array" });
       const ws = wb.Sheets[wb.SheetNames[0]];
       const rows = XLSX.utils.sheet_to_json(ws, { defval: "" });
       return renameColumns(rows);
@@ -427,15 +435,6 @@
     function num(v){
       const n = parseFloat(v);
       return Number.isFinite(n) ? n : 0;
-    }
-
-    function groupSum(data, groupKey, valueKey){
-      const map = {};
-      data.forEach(d => {
-        const k = d[groupKey] || "Unknown";
-        map[k] = (map[k] || 0) + num(d[valueKey]);
-      });
-      return Object.entries(map).map(([key, value]) => ({key, value}));
     }
 
     function groupRecords(data, groupKey){
@@ -478,12 +477,18 @@
       return strVal;
     }
 
-    function bubbleSizes(values, minSize = 10, maxSize = 24){
-      const maxVal = Math.max(...values, 1);
-      return values.map(v => {
-        const scaled = Math.sqrt(v / maxVal);
-        return minSize + scaled * (maxSize - minSize);
-      });
+    function monthToLabel(monthValue) {
+      if (!monthValue) return "Unknown";
+
+      const raw = String(monthValue).trim();
+
+      if (/^\d{4}-\d{2}$/.test(raw)) {
+        const [yr, mo] = raw.split("-");
+        const dt = new Date(Number(yr), Number(mo) - 1, 1);
+        return dt.toLocaleString("en-US", { month: "short" });
+      }
+
+      return formatMonthLabel(raw);
     }
 
     async function loadNMCountyGeo(){
@@ -497,13 +502,6 @@
         type: "FeatureCollection",
         features: nmFeatures
       };
-
-      nmCountyCentroids = {};
-      nmFeatures.forEach(f => {
-        const fips = String(f.id);
-        const c = d3.geoCentroid(f);
-        nmCountyCentroids[fips] = { lon: c[0], lat: c[1] };
-      });
     }
 
     function fillFilters(data){
@@ -560,30 +558,14 @@
       await loadNMCountyGeo();
       updateKPIs(data);
 
-      const monthlyVisitMap = {};
-      data.forEach(d => {
-        let label = "Unknown";
-        if (d.service_date !== undefined && d.service_date !== null && d.service_date !== "") {
-          const raw = String(d.service_date).trim();
-
-          if (/^\d{4}-\d{2}-\d{2}/.test(raw)) {
-            const dt = new Date(raw);
-            if (!isNaN(dt)) label = dt.toLocaleString("en-US", { month: "short" });
-          } else if (/^\d+(\.\d+)?$/.test(raw)) {
-            const excelSerial = Number(raw);
-            if (excelSerial > 20000) {
-              const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-              excelEpoch.setUTCDate(excelEpoch.getUTCDate() + Math.floor(excelSerial));
-              label = excelEpoch.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-            }
-          }
-        }
-        if (!monthlyVisitMap[label]) monthlyVisitMap[label] = 0;
-        monthlyVisitMap[label] += num(d.total_visits);
-      });
-
       const monthOrder = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
       const monthMap = {"Jan":0,"Feb":1,"Mar":2,"Apr":3,"May":4,"Jun":5,"Jul":6,"Aug":7,"Sep":8,"Oct":9,"Nov":10,"Dec":11};
+
+      const monthlyVisitMap = {};
+      data.forEach(d => {
+        const label = monthToLabel(d.month || d.service_date || "Unknown");
+        monthlyVisitMap[label] = (monthlyVisitMap[label] || 0) + num(d.total_visits);
+      });
 
       const monthVisits = Object.entries(monthlyVisitMap)
         .map(([key, value]) => ({ key, value }))
@@ -599,12 +581,7 @@
         marker: {size: 9, color: "#ba0c2f"}
       }], {
         ...layoutBase,
-        xaxis: {
-          title: "Month",
-          type: "category",
-          categoryorder: "array",
-          categoryarray: monthOrder
-        },
+        xaxis: {title: "Month", type: "category", categoryorder: "array", categoryarray: monthOrder},
         yaxis: {title: "Total Number of Visits"}
       }, {responsive:true});
 
@@ -655,34 +632,14 @@
         colorscale: "Tealgrn",
         colorbar: { title: "Diagnosis–Procedure Volume" },
         hovertemplate:
-          "Procedure Code (X): %{x}<br>" +
-          "Diagnosis Code (Y): %{y}<br>" +
-          "Diagnosis–Procedure Volume (Z): %{z}<extra></extra>"
+          "Procedure Code: %{x}<br>" +
+          "Diagnosis Code: %{y}<br>" +
+          "Volume: %{z}<extra></extra>"
       }], {
         ...layoutBase,
         margin: {l: 90, r: 90, t: 20, b: 60},
-        xaxis: {
-          title: "Procedure Code (X)",
-          type: "category",
-          tickmode: "array",
-          tickvals: procs.map(String),
-          ticktext: procs.map(String)
-        },
-        yaxis: {
-          title: "Diagnosis Code (Y)",
-          automargin: true,
-          tickfont: {size: 11}
-        },
-        annotations: [{
-          text: "Legend: X = Procedure Code, Y = Diagnosis Code, Z = Diagnosis–Procedure Volume",
-          xref: "paper",
-          yref: "paper",
-          x: 0,
-          y: 1.14,
-          showarrow: false,
-          font: {size: 12, color: "#5c6b7a"},
-          align: "left"
-        }]
+        xaxis: {title: "Procedure Code", type: "category"},
+        yaxis: {title: "Diagnosis Code", automargin: true, tickfont: {size: 11}}
       }, {responsive:true});
 
       const mco = groupRecords(data, "managed_care_plan").sort((a,b) => b.value - a.value);
@@ -698,74 +655,59 @@
       }, {responsive:true});
 
       const countyRecords = groupRecords(data, "county").sort((a,b) => b.value - a.value);
-      const countyMapRows = countyRecords
-        .map(c => {
-          const cleanCounty = normalizeCountyName(c.key);
-          const fips = NM_COUNTY_FIPS[cleanCounty];
-          if (!fips || !nmCountyCentroids[fips]) return null;
-          return {
-            county: cleanCounty,
-            value: c.value,
-            fips,
-            lat: nmCountyCentroids[fips].lat,
-            lon: nmCountyCentroids[fips].lon
-          };
-        })
-        .filter(Boolean);
 
-      const bubbleVals = countyMapRows.map(d => d.value);
-      const sizes = bubbleSizes(bubbleVals, 10, 22);
+      const countyValueMap = {};
+      countyRecords.forEach(c => {
+        const cleanCounty = normalizeCountyName(c.key);
+        const fips = NM_COUNTY_FIPS[cleanCounty];
+        if (fips) countyValueMap[fips] = { county: cleanCounty, value: c.value };
+      });
 
-      const countyOutlineTrace = {
+      const allNmCountyRows = nmCountyGeoJson.features.map(f => {
+        const fips = String(f.id);
+        const match = Object.entries(NM_COUNTY_FIPS).find(([countyName, countyFips]) => countyFips === fips);
+        const countyName = match ? normalizeCountyName(match[0]) : fips;
+        const value = countyValueMap[fips] ? countyValueMap[fips].value : 0;
+        return { fips, county: countyName, value };
+      });
+
+      Plotly.newPlot("chart6", [{
         type: "choropleth",
         geojson: nmCountyGeoJson,
         featureidkey: "id",
-        locations: nmCountyGeoJson.features.map(f => String(f.id)),
-        z: nmCountyGeoJson.features.map(() => 1),
-        colorscale: [[0, "#5FCBCB"], [1, "#5FCBCB"]],
-        showscale: false,
-        marker: {
-          line: {
-            color: "#2f4f4f",
-            width: 1.2
-          }
-        },
-        hoverinfo: "skip"
-      };
-
-      const countyBubbleTrace = {
-        type: "scattergeo",
-        mode: "markers",
-        lat: countyMapRows.map(d => d.lat),
-        lon: countyMapRows.map(d => d.lon),
-        text: countyMapRows.map(d => `${d.county}<br>County Service Volume: ${d.value}`),
-        marker: {
-          size: sizes,
-          color: bubbleVals,
-          colorscale: "Turbo",
-          opacity: 0.8,
-          line: {width: 1, color: "#ffffff"},
-          showscale: true,
-          colorbar: { title: "County Service Volume" }
-        },
-        hovertemplate: "%{text}<extra></extra>"
-      };
-
-      Plotly.newPlot("chart6", [countyOutlineTrace, countyBubbleTrace], {
+        locations: allNmCountyRows.map(d => d.fips),
+        z: allNmCountyRows.map(d => d.value),
+        text: allNmCountyRows.map(d => d.county),
+        colorscale: [
+          [0.00, "#fffbea"],
+          [0.15, "#fef3c7"],
+          [0.35, "#fde68a"],
+          [0.55, "#facc15"],
+          [0.75, "#ca8a04"],
+          [1.00, "#713f12"]
+        ],
+        zmin: 0,
+        zmax: Math.max(...allNmCountyRows.map(d => d.value), 1),
+        marker: {line: {color: "#1f2937", width: 1.4}},
+        colorbar: {title: "County Service Volume", thickness: 15, len: 0.78},
+        hovertemplate:
+          "<b>%{text} County</b><br>" +
+          "County Service Volume: %{z}<extra></extra>"
+      }], {
         ...layoutBase,
         geo: {
           scope: "usa",
-          projection: {type: "albers usa"},
+          projection: { type: "albers usa" },
           fitbounds: "locations",
           showland: true,
-          landcolor: "#dff7f7",
+          landcolor: "#f8fafc",
           showcountries: false,
           showsubunits: false,
           showlakes: false,
           bgcolor: "#ffffff"
         },
-        margin: {l:0, r:0, t:0, b:0}
-      }, {responsive:true});
+        margin: { l: 0, r: 0, t: 0, b: 0 }
+      }, { responsive: true });
 
       const providerRecords = groupRecords(data, "provider_name").sort((a,b) => b.value - a.value).slice(0, 15);
       Plotly.newPlot("chart7", [{
@@ -833,6 +775,169 @@
         ...layoutBase,
         yaxis: {title: "Paid Amount"}
       }, {responsive:true});
+
+      const countyDeniedMap = {};
+      data.forEach(d => {
+        const county = d.county || "Unknown";
+        if (!countyDeniedMap[county]) {
+          countyDeniedMap[county] = {
+            county,
+            totalClaims: num(d.county_total_claims),
+            paidCount: num(d.county_paid_count),
+            deniedCount: num(d.county_denied_count),
+            deniedPct: num(d.county_denied_pct)
+          };
+        }
+      });
+
+      const countyDeniedRows = Object.values(countyDeniedMap).sort((a, b) => b.deniedPct - a.deniedPct);
+
+      Plotly.newPlot("chart12", [
+        {
+          x: countyDeniedRows.map(d => d.county),
+          y: countyDeniedRows.map(d => d.deniedCount),
+          type: "bar",
+          name: "Denied Claim Count",
+          marker: { color: "#ba0c2f" },
+          text: countyDeniedRows.map(d => d.deniedCount),
+          textposition: "auto",
+          hovertemplate:
+            "<b>%{x}</b><br>" +
+            "Denied Claims: %{y}<br>" +
+            "Paid Claims: %{customdata}<extra></extra>",
+          customdata: countyDeniedRows.map(d => d.paidCount)
+        },
+        {
+          x: countyDeniedRows.map(d => d.county),
+          y: countyDeniedRows.map(d => d.deniedPct * 100),
+          type: "scatter",
+          mode: "lines+markers+text",
+          name: "Denied Claim %",
+          yaxis: "y2",
+          line: { color: "#008b95", width: 4 },
+          marker: { size: 9, color: "#008b95" },
+          text: countyDeniedRows.map(d => `${(d.deniedPct * 100).toFixed(1)}%`),
+          textposition: "top center",
+          hovertemplate:
+            "<b>%{x}</b><br>" +
+            "Denied Percentage: %{y:.1f}%<extra></extra>"
+        }
+      ], {
+        ...layoutBase,
+        margin: { l: 60, r: 70, t: 20, b: 80 },
+        xaxis: { title: "County", tickangle: -35 },
+        yaxis: { title: "Denied Claim Count" },
+        yaxis2: { title: "Denied Claim %", overlaying: "y", side: "right", ticksuffix: "%" },
+        legend: { orientation: "h", x: 0, y: 1.18 }
+      }, { responsive: true });
+
+      const monthHoursMap = {};
+
+      data.forEach(d => {
+        const monthRaw = d.month || "Unknown";
+        const monthLabel = monthToLabel(monthRaw);
+
+        if (!monthHoursMap[monthLabel]) {
+          monthHoursMap[monthLabel] = {
+            month: monthLabel,
+            average_chw_hours: num(d.average_chw_hours),
+            monthly_cap_status: d.monthly_cap_status || ""
+          };
+        }
+      });
+
+      const monthSort13 = {"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8,"Sep":9,"Oct":10,"Nov":11,"Dec":12};
+
+      const monthHoursRows = Object.values(monthHoursMap)
+        .filter(d => d.month !== "Unknown")
+        .sort((a, b) => monthSort13[a.month] - monthSort13[b.month]);
+
+      const exceedRows = monthHoursRows.filter(d => d.average_chw_hours > 8);
+
+      Plotly.newPlot("chart13", [
+        {
+          x: monthHoursRows.map(d => d.month),
+          y: monthHoursRows.map(d => d.average_chw_hours),
+          type: "scatter",
+          mode: "lines+markers+text",
+          name: "Average CHW Hours",
+          line: { color: "#008b95", width: 4 },
+          marker: {
+            size: 10,
+            color: monthHoursRows.map(d => d.average_chw_hours > 8 ? "#ba0c2f" : "#008b95")
+          },
+          text: monthHoursRows.map(d => d.average_chw_hours.toFixed(2)),
+          textposition: "bottom center",
+          hovertemplate:
+            "<b>%{x}</b><br>" +
+            "Average CHW Hours: %{y:.2f}<br>" +
+            "Status: %{customdata}<extra></extra>",
+          customdata: monthHoursRows.map(d => d.monthly_cap_status)
+        },
+        {
+          x: exceedRows.map(d => d.month),
+          y: exceedRows.map(d => d.average_chw_hours),
+          type: "scatter",
+          mode: "markers+text",
+          name: "Exceeds 8 Hours",
+          marker: {
+            size: 18,
+            color: "#ba0c2f",
+            symbol: "star"
+          },
+          text: exceedRows.map(() => "Exceeds 8 hrs"),
+          textposition: "top center",
+          hovertemplate:
+            "<b>%{x}</b><br>" +
+            "Exceeded 8-hour monthly cap<extra></extra>"
+        }
+      ], {
+        ...layoutBase,
+        margin: { l: 60, r: 30, t: 20, b: 60 },
+        xaxis: {
+          title: "Month",
+          type: "category",
+          categoryorder: "array",
+          categoryarray: monthOrder
+        },
+        yaxis: {
+          title: "Average CHW Hours"
+        },
+        shapes: [
+          {
+            type: "line",
+            xref: "paper",
+            x0: 0,
+            x1: 1,
+            yref: "y",
+            y0: 8,
+            y1: 8,
+            line: {
+              color: "#ba0c2f",
+              width: 2,
+              dash: "dash"
+            }
+          }
+        ],
+        annotations: [
+          {
+            xref: "paper",
+            yref: "y",
+            x: 1,
+            y: 8,
+            text: "8-hour cap",
+            showarrow: false,
+            font: { color: "#ba0c2f", size: 12 },
+            xanchor: "right",
+            yanchor: "bottom"
+          }
+        ],
+        legend: {
+          orientation: "h",
+          x: 0,
+          y: 1.18
+        }
+      }, { responsive: true });
     }
 
     async function renderDashboard(){
